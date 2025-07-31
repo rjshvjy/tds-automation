@@ -652,5 +652,4 @@ with st.sidebar:
     """)
     
     st.divider()
-    st.caption("Made with ❤️ using Streamlit")</content>
-</invoke>
+    st.caption("Made with ❤️ using Streamlit")
