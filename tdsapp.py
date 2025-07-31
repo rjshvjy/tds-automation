@@ -562,38 +562,51 @@ with tab2:
                             f.write(template_file.read())
                         
                         # Update masters with challans
-                        updated_masters = update_tds_masters_with_challans(
+                        updated_masters_path = update_tds_masters_with_challans(
                             tds_masters_data, challan_data_list, masters_path
                         )
                         
-                        # Generate output file
-                        output_path = generate_output_file(
-                            updated_masters, challan_data_list, template_path, temp_dir
-                        )
-                        
-                        # Read files for download
-                        with open(updated_masters, 'rb') as f:
-                            updated_masters_data = f.read()
-                        with open(output_path, 'rb') as f:
-                            output_data = f.read()
-                        
-                        st.session_state.processed = True
-                        st.session_state.results = {
-                            'challan_count': len(challan_data_list),
-                            'party_count': len(tds_masters_data['tds_parties']),
-                            'status': 'success',
-                            'updated_masters_data': updated_masters_data,
-                            'output_data': output_data,
-                            'output_filename': os.path.basename(output_path)
-                        }
-                    
-                    progress_bar.progress(1.0)
-                    status_text.text("✅ Processing complete!")
-                    st.success("🎉 TDS Return processing completed successfully!")
-                    st.balloons()
+                        if updated_masters_path and os.path.exists(updated_masters_path):
+                            # Read the updated masters file
+                            with open(updated_masters_path, 'rb') as f:
+                                updated_masters_file = f
+                                updated_masters_data = read_tds_masters(updated_masters_file)
+                            
+                            # Generate output file
+                            output_path = generate_output_file(
+                                updated_masters_data, challan_data_list, template_path, temp_dir
+                            )
+                            
+                            # Read files for download
+                            with open(updated_masters_path, 'rb') as f:
+                                updated_masters_content = f.read()
+                            
+                            if output_path and os.path.exists(output_path):
+                                with open(output_path, 'rb') as f:
+                                    output_content = f.read()
+                                
+                                st.session_state.processed = True
+                                st.session_state.results = {
+                                    'challan_count': len(challan_data_list),
+                                    'party_count': len(tds_masters_data['tds_parties']),
+                                    'status': 'success',
+                                    'updated_masters_data': updated_masters_content,
+                                    'output_data': output_content,
+                                    'output_filename': os.path.basename(output_path)
+                                }
+                                
+                                progress_bar.progress(1.0)
+                                status_text.text("✅ Processing complete!")
+                                st.success("🎉 TDS Return processing completed successfully!")
+                                st.balloons()
+                            else:
+                                st.error("Error generating output file")
+                        else:
+                            st.error("Error updating TDS Masters")
                     
             except Exception as e:
                 st.error(f"❌ Error during processing: {str(e)}")
+                st.exception(e)
     
     elif not all([pdf_files, masters_file, template_file]):
         st.warning("⚠️ Please upload all required files in the 'Upload Files' tab first")
