@@ -106,7 +106,7 @@ def extract_all_challans(pdf_folder_path, log_expander):
     pdf_files = [f for f in os.listdir(pdf_folder_path) if f.lower().endswith('.pdf')]
     if not pdf_files:
         st.warning("No PDF files found in the uploaded batch.")
-        return all_challan_data, pd.DataFrame()
+        return all_challan_data, pd.DataFrame(columns=["Challan Count", "Total Tax"])
 
     log_expander.info(f"Found {len(pdf_files)} PDF files to process...")
     
@@ -152,9 +152,15 @@ def extract_all_challans(pdf_folder_path, log_expander):
                 pass
     
     summary_df = pd.DataFrame.from_dict(summary, orient='index')
-    summary_df.index.name = "Nature of Payment"
-    summary_df.columns = ["Challan Count", "Total Tax"]
-    summary_df["Total Tax"] = summary_df["Total Tax"].map('{:,.2f}'.format)
+    
+    # FIX: Handle empty dataframe case to prevent ValueError
+    if summary_df.empty:
+        summary_df = pd.DataFrame(columns=["Challan Count", "Total Tax"])
+        summary_df.index.name = "Nature of Payment"
+    else:
+        summary_df.index.name = "Nature of Payment"
+        summary_df.columns = ["Challan Count", "Total Tax"]
+        summary_df["Total Tax"] = summary_df["Total Tax"].map('{:,.2f}'.format)
     
     return all_challan_data, summary_df
 
@@ -461,8 +467,9 @@ if process_button:
             else:
                 st.subheader("📊 Challan Data Summary")
                 st.dataframe(summary_df)
-                total_tax = summary_df["Total Tax"].str.replace(',', '').astype(float).sum()
-                st.metric("Grand Total Tax (from PDFs)", f"₹{total_tax:,.2f}")
+                if not summary_df.empty:
+                    total_tax = summary_df["Total Tax"].str.replace(',', '').astype(float).sum()
+                    st.metric("Grand Total Tax (from PDFs)", f"₹{total_tax:,.2f}")
 
                 with st.spinner('Step 2: Reading TDS Masters file...'):
                     tds_masters_data = read_tds_masters(masters_path, log_expander)
