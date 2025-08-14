@@ -1,95 +1,1018 @@
 {
   "metadata": {
-    "version": "3.0",
+    "total_cells": 12,
     "notebook_path": "TDS_Automation_V2.ipynb",
-    "last_scan": "2024-01-01T00:00:00",
-    "commit_hash": "initial",
-    "total_cells": 10,
+    "last_scan": "2025-08-14T08:36:42.329879",
+    "version": "3.0",
+    "repository": "rjshvjy/tds-automation",
     "type": "widget_based",
-    "flow_type": "branching"
+    "flow_type": "branching",
+    "commit_hash": "39b008d8256ac21e41776eb7de01b3138a0bb1e9"
   },
-  
   "cells": {
-    "cell_0": {
-      "index": 0,
-      "title": "Imports & Installation",
-      "status": "working",
+    "cell_1": {
+      "index": 1,
+      "title": "Install required libraries and import modules",
+      "status": "unknown",
       "imports": [
-        "import pandas as pd",
-        "import openpyxl",
         "import PyPDF2",
-        "import ipywidgets as widgets"
+        "import pandas as pd",
+        "import numpy as np",
+        "import re",
+        "import os",
+        "from datetime import datetime",
+        "import openpyxl",
+        "from openpyxl import load_workbook",
+        "from openpyxl.utils import get_column_letter",
+        "from openpyxl.styles import Font, Alignment, Border, Side",
+        "import warnings"
       ],
       "defines": {
         "functions": [],
         "classes": []
       },
-      "calls": [],
+      "calls": [
+        "filterwarnings",
+        "print"
+      ],
       "dependencies": {
         "backward": [],
         "forward": []
       },
       "issues": [],
       "mapping_related": false
+    },
+    "cell_2": {
+      "index": 2,
+      "title": "Functions to extract data from PDF challans - FIXED AMOUNT EXTRACTION",
+      "status": "unknown",
+      "imports": [],
+      "defines": {
+        "functions": [
+          "extract_challan_data_from_pdf",
+          "extract_all_challans",
+          "test_extraction"
+        ],
+        "classes": []
+      },
+      "calls": [
+        "open",
+        "group",
+        "sorted",
+        "search",
+        "upper",
+        "lower",
+        "strip",
+        "join",
+        "extract_text",
+        "extract_challan_data_from_pdf",
+        "zfill",
+        "append",
+        "PdfReader",
+        "basename",
+        "replace",
+        "extract_all_challans",
+        "endswith",
+        "str",
+        "float",
+        "print",
+        "get",
+        "items",
+        "listdir",
+        "test_extraction",
+        "len"
+      ],
+      "dependencies": {
+        "backward": [],
+        "forward": []
+      },
+      "issues": [
+        "Contains leading_zeros pattern",
+        "Contains string_preserve pattern"
+      ],
+      "mapping_related": true
+    },
+    "cell_3": {
+      "index": 3,
+      "title": "Functions to read and update Excel files - FIXED WITH PROPER COLUMN CODES AND TDS PRESERVATION",
+      "status": "unknown",
+      "imports": [
+        "import math",
+        "from decimal import Decimal, ROUND_HALF_UP",
+        "import traceback",
+        "import traceback",
+        "import traceback"
+      ],
+      "defines": {
+        "functions": [
+          "read_tds_masters",
+          "update_tds_masters_with_challans",
+          "validate_tds_totals"
+        ],
+        "classes": []
+      },
+      "calls": [
+        "astype",
+        "keys",
+        "iter_rows",
+        "group",
+        "min",
+        "sorted",
+        "cell",
+        "set",
+        "range",
+        "load_workbook",
+        "strptime",
+        "search",
+        "quantize",
+        "to_numeric",
+        "enumerate",
+        "read_tds_masters",
+        "validate_tds_totals",
+        "lower",
+        "strip",
+        "match",
+        "save",
+        "list",
+        "abs",
+        "append",
+        "int",
+        "to_datetime",
+        "DataFrame",
+        "replace",
+        "print_exc",
+        "any",
+        "startswith",
+        "notna",
+        "iterrows",
+        "str",
+        "print",
+        "close",
+        "read_excel",
+        "get",
+        "update_tds_masters_with_challans",
+        "items",
+        "Decimal",
+        "apply",
+        "len"
+      ],
+      "dependencies": {
+        "backward": [],
+        "forward": []
+      },
+      "issues": [
+        "Contains nan_values pattern",
+        "Contains date_format pattern",
+        "Contains rate_conversion pattern",
+        "Contains round_up pattern",
+        "Contains string_preserve pattern"
+      ],
+      "mapping_related": true,
+      "column_references": [
+        "(415)",
+        "(415A)",
+        "(416)",
+        "(417)",
+        "(418)",
+        "(419)",
+        "(421)",
+        "(425D)",
+        "(425E)",
+        "(425F)",
+        "(427)"
+      ]
+    },
+    "cell_4": {
+      "index": 4,
+      "title": "Enhanced Main Processing Pipeline",
+      "status": "unknown",
+      "imports": [
+        "import os",
+        "import math",
+        "import pandas as pd",
+        "import numpy as np",
+        "from datetime import datetime",
+        "from decimal import Decimal, ROUND_HALF_UP",
+        "import openpyxl",
+        "from openpyxl import load_workbook, Workbook",
+        "from openpyxl.utils import get_column_letter",
+        "from openpyxl.styles import Font, Alignment, Border, Side, PatternFill"
+      ],
+      "defines": {
+        "functions": [
+          "get_output_filename_from_masters",
+          "fill_government_template",
+          "_fill_deductor_details",
+          "_fill_challan_details",
+          "_fill_deductee_breakup",
+          "process_tds_returns_enhanced",
+          "process_tds_returns"
+        ],
+        "classes": []
+      },
+      "calls": [
+        "validate_all",
+        "create_sheet",
+        "Workbook",
+        "strftime",
+        "cell",
+        "range",
+        "strptime",
+        "Font",
+        "quantize",
+        "create_template",
+        "enumerate",
+        "fill_government_template",
+        "read_tds_masters",
+        "validate_tds_totals",
+        "strip",
+        "save",
+        "join",
+        "int",
+        "to_datetime",
+        "process_tds_returns",
+        "_fill_deductor_details",
+        "GovernmentTemplateBuilder",
+        "replace",
+        "isinstance",
+        "extract_all_challans",
+        "ValidationEngine",
+        "notna",
+        "_fill_challan_details",
+        "iterrows",
+        "_fill_deductee_breakup",
+        "to_pydatetime",
+        "generate_report",
+        "str",
+        "float",
+        "fill_template",
+        "dropna",
+        "now",
+        "print",
+        "get",
+        "dirname",
+        "update_tds_masters_with_challans",
+        "process_tds_returns_enhanced",
+        "get_output_filename_from_masters",
+        "ReconciliationReport",
+        "Decimal",
+        "remove",
+        "len"
+      ],
+      "dependencies": {
+        "backward": [
+          "cell_2",
+          "cell_3"
+        ],
+        "forward": [
+          "cell_10",
+          "cell_9",
+          "cell_5"
+        ]
+      },
+      "issues": [
+        "Contains nan_values pattern",
+        "Contains date_format pattern",
+        "Contains rate_conversion pattern",
+        "Contains round_up pattern",
+        "Contains string_preserve pattern"
+      ],
+      "mapping_related": true,
+      "column_references": [
+        "(415)",
+        "(415A)",
+        "(416)",
+        "(417)",
+        "(418)",
+        "(419)",
+        "(420)",
+        "(421)",
+        "(425D)",
+        "(427)"
+      ]
+    },
+    "cell_5": {
+      "index": 5,
+      "title": "Government Template Builder and Enhanced Output Generator",
+      "status": "unknown",
+      "imports": [
+        "import openpyxl",
+        "from openpyxl import Workbook",
+        "from openpyxl.styles import Font, Alignment, Border, Side, PatternFill",
+        "from openpyxl.utils import get_column_letter",
+        "from decimal import Decimal, ROUND_HALF_UP",
+        "import pandas as pd",
+        "from datetime import datetime",
+        "import math"
+      ],
+      "defines": {
+        "functions": [
+          "generate_output_file_enhanced",
+          "test_template_generation"
+        ],
+        "classes": [
+          "GovernmentTemplateBuilder"
+        ]
+      },
+      "calls": [
+        "_setup_deductor_sheet",
+        "__init__",
+        "create_sheet",
+        "Workbook",
+        "cell",
+        "strptime",
+        "create_template",
+        "Font",
+        "ceil",
+        "enumerate",
+        "upper",
+        "read_tds_masters",
+        "Alignment",
+        "strip",
+        "save",
+        "append",
+        "int",
+        "to_datetime",
+        "_fill_deductor_details",
+        "GovernmentTemplateBuilder",
+        "replace",
+        "get_column_letter",
+        "isinstance",
+        "extract_all_challans",
+        "test_template_generation",
+        "notna",
+        "_fill_challan_details",
+        "iterrows",
+        "_fill_deductee_breakup",
+        "fill_template",
+        "str",
+        "float",
+        "dropna",
+        "print",
+        "get",
+        "if",
+        "_setup_deductee_sheet",
+        "generate_output_file_enhanced",
+        "_setup_challan_sheet",
+        "len"
+      ],
+      "dependencies": {
+        "backward": [
+          "cell_4",
+          "cell_2",
+          "cell_3"
+        ],
+        "forward": []
+      },
+      "issues": [
+        "Contains nan_values pattern",
+        "Contains date_format pattern",
+        "Contains rate_conversion pattern",
+        "Contains round_up pattern",
+        "Contains string_preserve pattern"
+      ],
+      "mapping_related": true,
+      "column_references": [
+        "(415)",
+        "(415A)",
+        "(416)",
+        "(417)",
+        "(418)",
+        "(419)",
+        "(420)",
+        "(421)",
+        "(425D)",
+        "(425E)",
+        "(425F)",
+        "(427)"
+      ]
+    },
+    "cell_6": {
+      "index": 6,
+      "title": "Testing individual components and troubleshooting - FIXED VERSION",
+      "status": "unknown",
+      "imports": [
+        "from collections import Counter"
+      ],
+      "defines": {
+        "functions": [
+          "test_pdf_extraction_single",
+          "test_pdf_deduplication",
+          "test_tds_masters_reading",
+          "test_date_extraction",
+          "create_test_summary"
+        ],
+        "classes": []
+      },
+      "calls": [
+        "sorted",
+        "most_common",
+        "Counter",
+        "ceil",
+        "enumerate",
+        "read_tds_masters",
+        "lower",
+        "strip",
+        "abs",
+        "join",
+        "append",
+        "extract_challan_data_from_pdf",
+        "head",
+        "to_datetime",
+        "test_pdf_extraction_single",
+        "replace",
+        "extract_all_challans",
+        "endswith",
+        "notna",
+        "iterrows",
+        "str",
+        "float",
+        "test_tds_masters_reading",
+        "dropna",
+        "print",
+        "create_test_summary",
+        "get",
+        "test_date_extraction",
+        "items",
+        "get_output_filename_from_masters",
+        "listdir",
+        "test_pdf_deduplication"
+      ],
+      "dependencies": {
+        "backward": [
+          "cell_4",
+          "cell_2",
+          "cell_3"
+        ],
+        "forward": []
+      },
+      "issues": [
+        "Contains nan_values pattern",
+        "Contains leading_zeros pattern",
+        "Contains date_format pattern",
+        "Contains rate_conversion pattern",
+        "Contains round_up pattern",
+        "Contains string_preserve pattern"
+      ],
+      "mapping_related": true,
+      "column_references": [
+        "(415)",
+        "(415A)",
+        "(416)",
+        "(417)",
+        "(418)",
+        "(419)",
+        "(421)",
+        "(427)"
+      ]
+    },
+    "cell_7": {
+      "index": 7,
+      "title": "Modified Interactive Interface - 2-File Upload System",
+      "status": "unknown",
+      "imports": [
+        "import os",
+        "import zipfile",
+        "import shutil",
+        "from google.colab import files",
+        "import pandas as pd",
+        "from datetime import datetime",
+        "import time",
+        "import traceback"
+      ],
+      "defines": {
+        "functions": [
+          "clear_uploads",
+          "upload_zip_file",
+          "process_uploaded_files",
+          "start_interactive_upload",
+          "download_tds_masters_template"
+        ],
+        "classes": []
+      },
+      "calls": [
+        "extractall",
+        "open",
+        "upload",
+        "create_template",
+        "move",
+        "exists",
+        "ZipFile",
+        "lower",
+        "save",
+        "join",
+        "walk",
+        "append",
+        "extract_challan_data_from_pdf",
+        "start_interactive_upload",
+        "process_uploaded_files",
+        "basename",
+        "clear_uploads",
+        "download",
+        "rmtree",
+        "write",
+        "endswith",
+        "print_exc",
+        "startswith",
+        "TDSMastersTemplateGenerator",
+        "makedirs",
+        "print",
+        "get",
+        "process_tds_returns_enhanced",
+        "format",
+        "upload_zip_file",
+        "items",
+        "download_tds_masters_template",
+        "remove",
+        "len"
+      ],
+      "dependencies": {
+        "backward": [
+          "cell_4",
+          "cell_2"
+        ],
+        "forward": [
+          "cell_8"
+        ]
+      },
+      "issues": [
+        "Contains leading_zeros pattern",
+        "Contains rate_conversion pattern",
+        "Contains round_up pattern",
+        "Contains string_preserve pattern"
+      ],
+      "mapping_related": true,
+      "column_references": [
+        "(427)"
+      ]
+    },
+    "cell_8": {
+      "index": 8,
+      "title": "TDS_Masters Template Generator",
+      "status": "unknown",
+      "imports": [
+        "import openpyxl",
+        "from openpyxl import Workbook",
+        "from openpyxl.styles import Font, Alignment, Border, Side, PatternFill",
+        "from openpyxl.utils import get_column_letter",
+        "from openpyxl.worksheet.datavalidation import DataValidation",
+        "import pandas as pd",
+        "from datetime import datetime",
+        "import ipywidgets as widgets",
+        "from IPython.display import display",
+        "from google.colab import files"
+      ],
+      "defines": {
+        "functions": [
+          "generate_tds_masters_template",
+          "create_template_download_widget"
+        ],
+        "classes": [
+          "TDSMastersTemplateGenerator"
+        ]
+      },
+      "calls": [
+        "_setup_deductor_input_sheet",
+        "_setup_tds_codes_sheet",
+        "__init__",
+        "create_sheet",
+        "Workbook",
+        "Layout",
+        "Comment",
+        "cell",
+        "range",
+        "generate_tds_masters_template",
+        "create_template",
+        "Font",
+        "enumerate",
+        "Alignment",
+        "save",
+        "save_template",
+        "add",
+        "create_template_download_widget",
+        "download",
+        "details",
+        "DataValidation",
+        "_setup_challan_details_sheet",
+        "get_column_letter",
+        "VBox",
+        "merge_cells",
+        "add_data_validation",
+        "date",
+        "TDSMastersTemplateGenerator",
+        "download_template",
+        "_setup_tds_rates_sheet",
+        "now",
+        "print",
+        "_setup_tds_parties_sheet",
+        "on_click",
+        "Button",
+        "HTML",
+        "PatternFill",
+        "items"
+      ],
+      "dependencies": {
+        "backward": [],
+        "forward": []
+      },
+      "issues": [
+        "Contains nan_values pattern",
+        "Contains leading_zeros pattern",
+        "Contains date_format pattern",
+        "Contains rate_conversion pattern"
+      ],
+      "mapping_related": false,
+      "column_references": [
+        "(415)",
+        "(415A)",
+        "(416)",
+        "(417)",
+        "(418)",
+        "(419)",
+        "(420)",
+        "(421)",
+        "(425D)",
+        "(425E)",
+        "(425F)",
+        "(427)"
+      ]
+    },
+    "cell_9": {
+      "index": 9,
+      "title": "Validation Engine with Reconciliation Report Support",
+      "status": "unknown",
+      "imports": [
+        "import re",
+        "import pandas as pd",
+        "import openpyxl",
+        "from openpyxl import load_workbook",
+        "from datetime import datetime",
+        "from decimal import Decimal, ROUND_HALF_UP",
+        "import numpy as np"
+      ],
+      "defines": {
+        "functions": [
+          "test_validation"
+        ],
+        "classes": [
+          "ValidationEngine"
+        ]
+      },
+      "calls": [
+        "validate_all",
+        "keys",
+        "__init__",
+        "set",
+        "sorted",
+        "strftime",
+        "load_workbook",
+        "test_validation",
+        "quantize",
+        "_generate_suggestions",
+        "validator",
+        "_load_deductor_details",
+        "enumerate",
+        "upper",
+        "strip",
+        "match",
+        "list",
+        "abs",
+        "values",
+        "append",
+        "_reconcile_amounts",
+        "_validate_pan",
+        "to_string",
+        "to_excel",
+        "_validate_pincode",
+        "title",
+        "sum",
+        "DataFrame",
+        "_validate_tan",
+        "_validate_formats",
+        "replace",
+        "ValidationEngine",
+        "_validate_yes_no",
+        "notna",
+        "iterrows",
+        "get_validation_dataframe",
+        "str",
+        "float",
+        "export_validation_report",
+        "_validate_email",
+        "_validate_deductor_type",
+        "now",
+        "print",
+        "get",
+        "items",
+        "ExcelWriter",
+        "Decimal",
+        "_validate_quarter",
+        "_validate_mandatory_fields",
+        "_generate_summary",
+        "len"
+      ],
+      "dependencies": {
+        "backward": [],
+        "forward": []
+      },
+      "issues": [
+        "Contains nan_values pattern",
+        "Contains date_format pattern",
+        "Contains rate_conversion pattern",
+        "Contains round_up pattern",
+        "Contains string_preserve pattern"
+      ],
+      "mapping_related": true,
+      "column_references": [
+        "(415A)",
+        "(416)",
+        "(417)",
+        "(421)"
+      ]
+    },
+    "cell_10": {
+      "index": 10,
+      "title": "Reconciliation Report Generator",
+      "status": "unknown",
+      "imports": [
+        "import pandas as pd",
+        "import openpyxl",
+        "from openpyxl import Workbook",
+        "from openpyxl.styles import Font, Alignment, Border, Side, PatternFill",
+        "from openpyxl.utils import get_column_letter",
+        "from openpyxl.formatting.rule import CellIsRule",
+        "from openpyxl.styles.differential import DifferentialStyle",
+        "from datetime import datetime",
+        "import numpy as np"
+      ],
+      "defines": {
+        "functions": [
+          "test_reconciliation_report"
+        ],
+        "classes": [
+          "ReconciliationReport"
+        ]
+      },
+      "calls": [
+        "__init__",
+        "create_sheet",
+        "Workbook",
+        "strftime",
+        "cell",
+        "else",
+        "range",
+        "Font",
+        "enumerate",
+        "test_reconciliation_report",
+        "Alignment",
+        "save",
+        "values",
+        "_create_data_corrections_sheet",
+        "abs",
+        "append",
+        "Side",
+        "_create_validation_errors_sheet",
+        "title",
+        "sum",
+        "Border",
+        "_create_summary_sheet",
+        "_create_challan_matching_sheet",
+        "merge_cells",
+        "generate_report",
+        "_print_report_summary",
+        "now",
+        "print",
+        "get",
+        "PatternFill",
+        "_get_format_suggestion",
+        "items",
+        "ReconciliationReport",
+        "remove",
+        "_create_mandatory_fields_sheet",
+        "len"
+      ],
+      "dependencies": {
+        "backward": [],
+        "forward": []
+      },
+      "issues": [
+        "Contains date_format pattern",
+        "Contains rate_conversion pattern"
+      ],
+      "mapping_related": true,
+      "column_references": [
+        "(416)",
+        "(417)"
+      ]
+    },
+    "cell_11": {
+      "index": 11,
+      "title": "Main Execution Cell - Simple Interface",
+      "status": "unknown",
+      "imports": [],
+      "defines": {
+        "functions": [
+          "quick_start"
+        ],
+        "classes": []
+      },
+      "calls": [
+        "print",
+        "get",
+        "start_interactive_upload",
+        "endswith",
+        "exists",
+        "quick_start",
+        "listdir",
+        "len"
+      ],
+      "dependencies": {
+        "backward": [
+          "cell_7"
+        ],
+        "forward": []
+      },
+      "issues": [],
+      "mapping_related": false
     }
   },
-  
   "dependency_graph": {
-    "execution_order": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "execution_order": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
     "definitions": {
-      "extract_challan_data_from_pdf": "cell_1",
-      "read_tds_masters": "cell_2",
-      "ValidationEngine": "cell_4",
+      "extract_challan_data_from_pdf": "cell_2",
+      "extract_all_challans": "cell_2",
+      "test_extraction": "cell_2",
+      "read_tds_masters": "cell_3",
+      "update_tds_masters_with_challans": "cell_3",
+      "validate_tds_totals": "cell_3",
+      "get_output_filename_from_masters": "cell_4",
+      "fill_government_template": "cell_4",
+      "_fill_deductor_details": "cell_4",
+      "_fill_challan_details": "cell_4",
+      "_fill_deductee_breakup": "cell_4",
+      "process_tds_returns_enhanced": "cell_4",
+      "process_tds_returns": "cell_4",
+      "generate_output_file_enhanced": "cell_5",
+      "test_template_generation": "cell_5",
       "GovernmentTemplateBuilder": "cell_5",
-      "ReconciliationReport": "cell_6"
+      "test_pdf_extraction_single": "cell_6",
+      "test_pdf_deduplication": "cell_6",
+      "test_tds_masters_reading": "cell_6",
+      "test_date_extraction": "cell_6",
+      "create_test_summary": "cell_6",
+      "clear_uploads": "cell_7",
+      "upload_zip_file": "cell_7",
+      "process_uploaded_files": "cell_7",
+      "start_interactive_upload": "cell_7",
+      "download_tds_masters_template": "cell_7",
+      "generate_tds_masters_template": "cell_8",
+      "create_template_download_widget": "cell_8",
+      "TDSMastersTemplateGenerator": "cell_8",
+      "test_validation": "cell_9",
+      "ValidationEngine": "cell_9",
+      "test_reconciliation_report": "cell_10",
+      "ReconciliationReport": "cell_10",
+      "quick_start": "cell_11"
     },
-    "forward_dependencies": 0,
-    "circular_dependencies": [],
-    "missing_definitions": []
+    "forward_dependencies": 2
   },
-  
   "mapping_pipeline": {
     "pdf_extraction": {
       "functions": [
         {
-          "cell": "cell_1",
-          "functions": ["extract_challan_data_from_pdf", "extract_all_challans"]
+          "cell": "cell_2",
+          "functions": [
+            "extract_challan_data_from_pdf",
+            "extract_all_challans",
+            "test_extraction"
+          ]
+        },
+        {
+          "cell": "cell_6",
+          "functions": [
+            "test_pdf_extraction_single",
+            "test_pdf_deduplication",
+            "test_tds_masters_reading",
+            "test_date_extraction",
+            "create_test_summary"
+          ]
+        },
+        {
+          "cell": "cell_7",
+          "functions": [
+            "clear_uploads",
+            "upload_zip_file",
+            "process_uploaded_files",
+            "start_interactive_upload",
+            "download_tds_masters_template"
+          ]
         }
       ],
       "input_fields": [
+        "bsr_code",
         "challan_no",
         "bsr_code",
-        "tender_date",
-        "challan_amount",
-        "education_cess",
-        "surcharge",
-        "interest",
-        "fee",
-        "penalty",
-        "total_amount",
-        "mode_of_payment",
-        "cheque_no",
-        "nature_of_payment",
-        "minor_head"
+        "challan_no",
+        "bsr_code",
+        "challan_no",
+        "challan_no",
+        "challan_no",
+        "challan_no",
+        "challan_no",
+        "challan_no"
       ],
-      "output_structure": {
-        "type": "dict",
-        "fields": {
-          "challan_no": "string",
-          "bsr_code": "string (7 digits)",
-          "tender_date": "DD/MM/YYYY",
-          "amounts": "decimal",
-          "mode_of_payment": "uppercase string"
-        }
-      },
+      "output_structure": {},
       "issues": []
     },
-    
     "excel_processing": {
       "functions": [
         {
-          "cell": "cell_2",
-          "functions": ["read_tds_masters", "update_tds_masters_with_challans"]
+          "cell": "cell_1",
+          "functions": []
+        },
+        {
+          "cell": "cell_3",
+          "functions": [
+            "read_tds_masters",
+            "update_tds_masters_with_challans",
+            "validate_tds_totals"
+          ]
+        },
+        {
+          "cell": "cell_4",
+          "functions": [
+            "get_output_filename_from_masters",
+            "fill_government_template",
+            "_fill_deductor_details",
+            "_fill_challan_details",
+            "_fill_deductee_breakup",
+            "process_tds_returns_enhanced",
+            "process_tds_returns"
+          ]
+        },
+        {
+          "cell": "cell_5",
+          "functions": [
+            "generate_output_file_enhanced",
+            "test_template_generation"
+          ]
+        },
+        {
+          "cell": "cell_6",
+          "functions": [
+            "test_pdf_extraction_single",
+            "test_pdf_deduplication",
+            "test_tds_masters_reading",
+            "test_date_extraction",
+            "create_test_summary"
+          ]
+        },
+        {
+          "cell": "cell_7",
+          "functions": [
+            "clear_uploads",
+            "upload_zip_file",
+            "process_uploaded_files",
+            "start_interactive_upload",
+            "download_tds_masters_template"
+          ]
+        },
+        {
+          "cell": "cell_8",
+          "functions": [
+            "generate_tds_masters_template",
+            "create_template_download_widget"
+          ]
+        },
+        {
+          "cell": "cell_9",
+          "functions": [
+            "test_validation"
+          ]
+        },
+        {
+          "cell": "cell_10",
+          "functions": [
+            "test_reconciliation_report"
+          ]
+        },
+        {
+          "cell": "cell_11",
+          "functions": [
+            "quick_start"
+          ]
         }
       ],
       "column_mappings": {
@@ -107,167 +1030,187 @@
         "(427)": "Rate"
       },
       "transformations": [
-        "BSR padding to 7 digits",
-        "Challan number as string",
-        "Date formatting DD/MM/YYYY",
-        "Rate decimal to percentage",
-        "Amount ROUND_HALF_UP",
-        "Mode of payment uppercase"
+        "Amount rounding up",
+        "Date formatting",
+        "Amount rounding up",
+        "Date formatting",
+        "Amount rounding up",
+        "Date formatting",
+        "Date formatting",
+        "Date formatting",
+        "Amount rounding up",
+        "Date formatting",
+        "Date formatting"
       ],
       "issues": []
     },
-    
     "validation": {
       "mandatory_fields": 20,
       "validation_functions": [
         {
-          "cell": "cell_4",
-          "functions": ["ValidationEngine", "validate_all"]
-        }
-      ],
-      "field_validators": {
-        "TAN": "AAAA99999A format",
-        "PAN": "AAAAA9999A format",
-        "Email": "email format",
-        "Pincode": "6 digits",
-        "Phone": "10 digits"
-      },
-      "issues": []
-    },
-    
-    "template_generation": {
-      "functions": [
+          "cell": "cell_3",
+          "functions": [
+            "read_tds_masters",
+            "update_tds_masters_with_challans",
+            "validate_tds_totals"
+          ]
+        },
         {
-          "cell": "cell_5",
-          "functions": ["GovernmentTemplateBuilder", "create_template", "fill_template"]
+          "cell": "cell_4",
+          "functions": [
+            "get_output_filename_from_masters",
+            "fill_government_template",
+            "_fill_deductor_details",
+            "_fill_challan_details",
+            "_fill_deductee_breakup",
+            "process_tds_returns_enhanced",
+            "process_tds_returns"
+          ]
+        },
+        {
+          "cell": "cell_9",
+          "functions": [
+            "test_validation"
+          ]
+        },
+        {
+          "cell": "cell_10",
+          "functions": [
+            "test_reconciliation_report"
+          ]
         }
       ],
-      "sheet_mappings": {
-        "INPUT-DEDUCTOR DETAILS": "DEDUCTOR DETAILS",
-        "TDS PARTIES": "DEDUCTEE BREAK-UP",
-        "Challan Details": "CHALLAN DETAILS"
-      },
       "issues": []
     }
   },
-  
-  "widget_flow": {
-    "states": {
-      "initial": "Start widget displayed",
-      "template_download": "User downloads blank template",
-      "stop_program": "Program stops after download",
-      "upload_files": "User uploads Masters + PDFs",
-      "processing": "System processes files",
-      "complete": "Results ready for download"
-    },
-    "transitions": {
-      "initial->template_download": "User chooses Option 1",
-      "template_download->stop_program": "Template downloaded",
-      "initial->upload_files": "User chooses Option 2",
-      "upload_files->processing": "Valid files uploaded",
-      "processing->complete": "Processing successful"
-    },
-    "breakpoints": ["stop_program"],
-    "issues": []
-  },
-  
   "issues": {
     "critical": [],
-    "warnings": [],
+    "warnings": [
+      "Cell 4: Forward dependency on GovernmentTemplateBuilder defined in Cell 5",
+      "Cell 4: Forward dependency on ValidationEngine defined in Cell 9",
+      "Cell 4: Forward dependency on ReconciliationReport defined in Cell 10",
+      "Cell 7: Forward dependency on TDSMastersTemplateGenerator defined in Cell 8",
+      "Undefined function called: iter_rows",
+      "Undefined function called: group",
+      "Undefined function called: set",
+      "Undefined function called: create_sheet",
+      "Undefined function called: Workbook",
+      "Undefined function called: else",
+      "Undefined function called: upload",
+      "Undefined function called: strptime",
+      "Undefined function called: create_template",
+      "Undefined function called: quantize",
+      "Undefined function called: move",
+      "Undefined function called: Counter",
+      "Undefined function called: ceil",
+      "Undefined function called: enumerate",
+      "Undefined function called: upper",
+      "Undefined function called: lower",
+      "Undefined function called: Alignment",
+      "Undefined function called: list",
+      "Undefined function called: join",
+      "Undefined function called: extract_text",
+      "Undefined function called: add",
+      "Undefined function called: download",
+      "Undefined function called: details",
+      "Undefined function called: DataValidation",
+      "Undefined function called: get_column_letter",
+      "Undefined function called: endswith",
+      "Undefined function called: print_exc",
+      "Undefined function called: any",
+      "Undefined function called: startswith",
+      "Undefined function called: notna",
+      "Undefined function called: to_pydatetime",
+      "Undefined function called: export_validation_report",
+      "Undefined function called: listdir",
+      "Undefined function called: astype",
+      "Undefined function called: sorted",
+      "Undefined function called: Comment",
+      "Undefined function called: load_workbook",
+      "Undefined function called: search",
+      "Undefined function called: exists",
+      "Undefined function called: save_template",
+      "Undefined function called: append",
+      "Undefined function called: PdfReader",
+      "Undefined function called: title",
+      "Undefined function called: DataFrame",
+      "Undefined function called: rmtree",
+      "Undefined function called: write",
+      "Undefined function called: filterwarnings",
+      "Undefined function called: fill_template",
+      "Undefined function called: read_excel",
+      "Undefined function called: dirname",
+      "Undefined function called: HTML",
+      "Undefined function called: ExcelWriter",
+      "Undefined function called: Decimal",
+      "Undefined function called: validate_all",
+      "Undefined function called: extractall",
+      "Undefined function called: cell",
+      "Undefined function called: strftime",
+      "Undefined function called: Font",
+      "Undefined function called: validator",
+      "Undefined function called: match",
+      "Undefined function called: abs",
+      "Undefined function called: head",
+      "Undefined function called: to_string",
+      "Undefined function called: to_excel",
+      "Undefined function called: sum",
+      "Undefined function called: replace",
+      "Undefined function called: add_data_validation",
+      "Undefined function called: iterrows",
+      "Undefined function called: generate_report",
+      "Undefined function called: close",
+      "Undefined function called: get",
+      "Undefined function called: if",
+      "Undefined function called: format",
+      "Undefined function called: PatternFill",
+      "Undefined function called: remove",
+      "Undefined function called: keys",
+      "Undefined function called: Layout",
+      "Undefined function called: min",
+      "Undefined function called: most_common",
+      "Undefined function called: to_numeric",
+      "Undefined function called: ZipFile",
+      "Undefined function called: strip",
+      "Undefined function called: save",
+      "Undefined function called: values",
+      "Undefined function called: zfill",
+      "Undefined function called: walk",
+      "Undefined function called: to_datetime",
+      "Undefined function called: Side",
+      "Undefined function called: basename",
+      "Undefined function called: Border",
+      "Undefined function called: apply",
+      "Undefined function called: VBox",
+      "Undefined function called: merge_cells",
+      "Undefined function called: date",
+      "Undefined function called: makedirs",
+      "Undefined function called: get_validation_dataframe",
+      "Undefined function called: download_template",
+      "Undefined function called: dropna",
+      "Undefined function called: now",
+      "Undefined function called: on_click",
+      "Undefined function called: Button",
+      "Undefined function called: items"
+    ],
     "mapping_issues": [],
-    "fixed": [
-      "NaN issue resolved with openpyxl",
-      "Leading zeros preserved",
-      "Rate formatting fixed",
-      "Column codes with - prefix handled"
-    ]
+    "fixed": []
   },
-  
+  "pdf_excel_flow": {},
   "test_coverage": {
     "test_functions": [
+      "test_extraction",
+      "test_template_generation",
       "test_pdf_extraction_single",
       "test_pdf_deduplication",
       "test_tds_masters_reading",
       "test_date_extraction",
-      "test_validation"
+      "test_validation",
+      "test_reconciliation_report"
     ],
-    "coverage_count": 5,
+    "coverage_count": 8,
     "has_pdf_tests": true,
     "has_excel_tests": true,
     "has_validation_tests": true
-  },
-  
-  "pdf_excel_flow": {
-    "sequence": [
-      {
-        "step": 1,
-        "name": "PDF Extraction",
-        "input": "PDF files",
-        "function": "extract_all_challans",
-        "output": "challan_data_list"
-      },
-      {
-        "step": 2,
-        "name": "Masters Reading",
-        "input": "TDS_Masters.xlsx",
-        "function": "read_tds_masters",
-        "output": "tds_masters_data"
-      },
-      {
-        "step": 3,
-        "name": "Validation",
-        "input": "tds_masters_data",
-        "function": "ValidationEngine.validate_all",
-        "output": "validation_results"
-      },
-      {
-        "step": 4,
-        "name": "Update Masters",
-        "input": ["tds_masters_data", "challan_data_list"],
-        "function": "update_tds_masters_with_challans",
-        "output": "updated_masters_data"
-      },
-      {
-        "step": 5,
-        "name": "Generate Template",
-        "input": "updated_masters_data",
-        "function": "GovernmentTemplateBuilder.fill_template",
-        "output": "govt_template"
-      },
-      {
-        "step": 6,
-        "name": "Generate Report",
-        "input": "validation_results",
-        "function": "ReconciliationReport.generate_report",
-        "output": "reconciliation_report"
-      }
-    ],
-    "data_transformations": {
-      "BSR_code": {
-        "from": "numeric/string",
-        "to": "7-digit padded string",
-        "method": "str(bsr).zfill(7)"
-      },
-      "challan_no": {
-        "from": "numeric/string",
-        "to": "string",
-        "method": "str(challan_no)"
-      },
-      "dates": {
-        "from": "various formats",
-        "to": "DD/MM/YYYY",
-        "method": "strftime('%d/%m/%Y')"
-      },
-      "rate": {
-        "from": "decimal (0.1)",
-        "to": "percentage (10)",
-        "method": "rate * 100"
-      },
-      "amount": {
-        "from": "float",
-        "to": "rounded integer",
-        "method": "ROUND_HALF_UP"
-      }
-    }
   }
 }
