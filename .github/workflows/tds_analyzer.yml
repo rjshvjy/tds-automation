@@ -1,7 +1,7 @@
 name: TDS Notebook Analyzer
 
-# Workflow for rjshvjy/tds-automation repository
-# Analyzes TDS_Automation_V2.ipynb for dependencies and PDF→Excel mapping issues
+# Enhanced analyzer workflow for rjshvjy/tds-automation repository
+# Analyzes TDS_Automation_V2.ipynb with detailed implementation extraction
 # Location: .github/workflows/tds_analyzer.yml
 
 on:
@@ -9,7 +9,9 @@ on:
     branches: [ main, dev ]
     paths:
       - 'TDS_Automation_V2.ipynb'  # Main notebook in root
+      - 'TDS_Automation_V3.ipynb'  # Future GitHub-integrated version
       - 'scripts/**.py'
+      - 'templates/**.xlsx'  # New template files
       - 'tdsapp.py'  # Streamlit app
       - 'requirements.txt'
       - 'readme.md'
@@ -43,14 +45,15 @@ jobs:
         pip install --upgrade pip
         pip install nbformat pandas openpyxl jsonschema
         pip install PyGithub  # For creating issues
+        pip install requests  # For GitHub template fetching (new)
     
     - name: Create scripts directory if not exists
       run: mkdir -p scripts
     
-    - name: Run notebook analyzer
+    - name: Run enhanced notebook analyzer
       id: analyzer
       run: |
-        # Analyze the main notebook TDS_Automation_V2.ipynb in repo root
+        # Analyze the main notebook with enhanced analyzer
         python scripts/notebook_analyzer.py \
           --notebook "TDS_Automation_V2.ipynb" \
           --output "TDS_DEV_INDEX.json" \
@@ -62,18 +65,54 @@ jobs:
         python -m json.tool TDS_DEV_INDEX.json > /dev/null
         echo "✅ JSON validation passed"
     
+    - name: Check analyzer version
+      run: |
+        # Display analyzer version and type
+        python -c "
+        import json
+        with open('TDS_DEV_INDEX.json') as f:
+            data = json.load(f)
+        version = data.get('metadata', {}).get('analyzer_version', '1.0')
+        purpose = data.get('metadata', {}).get('purpose', 'basic analysis')
+        print(f'📊 Analyzer Version: {version}')
+        print(f'📊 Purpose: {purpose}')
+        if version == '2.0':
+            print('✅ Using enhanced analyzer with implementation details')
+            funcs = len(data.get('function_signatures', {}))
+            print(f'   Functions documented: {funcs}')
+        else:
+            print('ℹ️ Using original analyzer')
+        "
+    
     - name: Check for critical issues
       id: check-issues
       run: |
         python scripts/check_critical_issues.py TDS_DEV_INDEX.json
       continue-on-error: true
     
-    - name: Generate bug report
-      if: steps.check-issues.outcome == 'failure'
+    - name: Generate enhanced bug report
+      if: always()  # Always generate report for documentation
       run: |
-        python scripts/generate_bug_report.py \
-          --index TDS_DEV_INDEX.json \
-          --output MAPPING_BUGS.md
+        # Check if enhanced report generator exists, otherwise use original
+        if [ -f "scripts/generate_enhanced_report.py" ]; then
+          python scripts/generate_enhanced_report.py \
+            --index TDS_DEV_INDEX.json \
+            --output IMPLEMENTATION_REPORT.md
+        elif [ -f "scripts/generate_bug_report.py" ]; then
+          python scripts/generate_bug_report.py \
+            --index TDS_DEV_INDEX.json \
+            --output MAPPING_BUGS.md
+        fi
+    
+    - name: Check for GitHub templates
+      run: |
+        # Check if template directory exists and has files
+        if [ -d "templates" ]; then
+          echo "📁 Template directory found"
+          ls -la templates/
+        else
+          echo "⚠️ No templates directory found (expected for V3)"
+        fi
     
     - name: Commit index updates
       if: github.event_name == 'push'
@@ -81,17 +120,45 @@ jobs:
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         git add TDS_DEV_INDEX.json
+        git add IMPLEMENTATION_REPORT.md 2>/dev/null || true
         git add MAPPING_BUGS.md 2>/dev/null || true
-        git diff --staged --quiet || git commit -m "🤖 Auto-update: TDS index and bug tracking
+        
+        # Create detailed commit message based on analyzer version
+        python -c "
+        import json
+        with open('TDS_DEV_INDEX.json') as f:
+            data = json.load(f)
+        version = data.get('metadata', {}).get('analyzer_version', '1.0')
+        issues = data.get('issues', {})
+        
+        if version == '2.0':
+            funcs = len(data.get('function_signatures', {}))
+            structs = len(data.get('data_structures', {}))
+            msg = f'''🤖 Auto-update: Enhanced TDS analysis v{version}
+        
+        Repository: rjshvjy/tds-automation
+        - Analyzed TDS_Automation_V2.ipynb
+        - Documented {funcs} function signatures
+        - Captured {structs} data structures
+        - Extracted implementation details'''
+        else:
+            critical = len(issues.get('critical', []))
+            msg = f'''🤖 Auto-update: TDS index and bug tracking
         
         Repository: rjshvjy/tds-automation
         - Analyzed TDS_Automation_V2.ipynb
         - Updated dependency graph
-        - Tracked PDF→Excel mappings
-        - Found $(python -c "import json; data=json.load(open('TDS_DEV_INDEX.json')); print(len(data.get('issues', {}).get('critical', [])))" 2>/dev/null || echo 0) critical issues"
+        - Found {critical} critical issues'''
+        
+        with open('commit_msg.txt', 'w') as f:
+            f.write(msg)
+        "
+        
+        git diff --staged --quiet || git commit -F commit_msg.txt
+        rm -f commit_msg.txt
         git push
     
-    - name: Comment on PR
+    - name: Comment on PR with enhanced details
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v6
       with:
@@ -99,34 +166,47 @@ jobs:
           const fs = require('fs');
           const indexData = JSON.parse(fs.readFileSync('TDS_DEV_INDEX.json', 'utf8'));
           
+          const version = indexData.metadata?.analyzer_version || '1.0';
           const issues = indexData.issues || {};
           const critical = issues.critical || [];
           const warnings = issues.warnings || [];
-          const mappingIssues = issues.mapping_issues || [];
+          const info = issues.info || [];
           
           let comment = '## 📊 TDS Notebook Analysis Report\n\n';
           comment += '**Repository:** rjshvjy/tds-automation\n';
-          comment += '**Notebook:** TDS_Automation_V2.ipynb\n\n';
-          comment += `### Summary\n`;
-          comment += `- **Critical Issues:** ${critical.length}\n`;
-          comment += `- **Warnings:** ${warnings.length}\n`;
-          comment += `- **Mapping Issues:** ${mappingIssues.length}\n\n`;
+          comment += '**Notebook:** TDS_Automation_V2.ipynb\n';
+          comment += `**Analyzer Version:** ${version}\n\n`;
           
-          if (critical.length > 0) {
-            comment += `### 🚨 Critical Issues\n`;
-            critical.forEach(issue => {
-              comment += `- ${issue}\n`;
-            });
-            comment += '\n';
-          }
-          
-          if (mappingIssues.length > 0) {
-            comment += `### 🔄 PDF→Excel Mapping Issues\n`;
-            mappingIssues.slice(0, 5).forEach(issue => {
-              comment += `- ${issue}\n`;
-            });
-            if (mappingIssues.length > 5) {
-              comment += `- ... and ${mappingIssues.length - 5} more\n`;
+          if (version === '2.0') {
+            // Enhanced analyzer output
+            const funcs = Object.keys(indexData.function_signatures || {}).length;
+            const structs = Object.keys(indexData.data_structures || {}).length;
+            const mappings = Object.keys(indexData.excel_mappings || {}).length;
+            
+            comment += `### 📋 Implementation Analysis\n`;
+            comment += `- **Functions Documented:** ${funcs}\n`;
+            comment += `- **Data Structures:** ${structs}\n`;
+            comment += `- **Excel Mappings:** ${mappings}\n`;
+            comment += `- **GitHub Ready:** ${indexData.github_integration ? '✅' : '⏳'}\n\n`;
+            
+            if (info.length > 0) {
+              comment += `### ℹ️ Status\n`;
+              info.forEach(item => {
+                comment += `- ${item}\n`;
+              });
+              comment += '\n';
+            }
+          } else {
+            // Original analyzer output
+            comment += `### Summary\n`;
+            comment += `- **Critical Issues:** ${critical.length}\n`;
+            comment += `- **Warnings:** ${warnings.length}\n\n`;
+            
+            if (critical.length > 0) {
+              comment += `### 🚨 Critical Issues\n`;
+              critical.forEach(issue => {
+                comment += `- ${issue}\n`;
+              });
             }
           }
           
@@ -137,7 +217,7 @@ jobs:
             body: comment
           });
     
-    - name: Create issue for critical bugs
+    - name: Create issue for critical bugs (enhanced)
       if: steps.check-issues.outcome == 'failure' && github.event_name == 'push'
       uses: actions/github-script@v6
       with:
@@ -145,18 +225,24 @@ jobs:
           const fs = require('fs');
           const indexData = JSON.parse(fs.readFileSync('TDS_DEV_INDEX.json', 'utf8'));
           const critical = indexData.issues?.critical || [];
+          const version = indexData.metadata?.analyzer_version || '1.0';
           
           if (critical.length > 0) {
-            const issueBody = `## 🐛 Critical Issues Found in TDS Notebook\n\n` +
-              `**Repository:** rjshvjy/tds-automation\n` +
-              `**File:** TDS_Automation_V2.ipynb\n\n` +
-              `The automated analyzer found ${critical.length} critical issues:\n\n` +
-              critical.map((issue, i) => `${i+1}. ${issue}`).join('\n') +
-              `\n\n### Affected Areas\n` +
-              `- PDF Data Extraction (PyPDF2)\n` +
-              `- Excel Column Mappings (openpyxl)\n` +
-              `- Data Transformations\n\n` +
-              `[View Full Report](TDS_DEV_INDEX.json)`;
+            let issueBody = `## 🐛 Critical Issues Found in TDS Notebook\n\n`;
+            issueBody += `**Repository:** rjshvjy/tds-automation\n`;
+            issueBody += `**File:** TDS_Automation_V2.ipynb\n`;
+            issueBody += `**Analyzer Version:** ${version}\n\n`;
+            issueBody += `The automated analyzer found ${critical.length} critical issues:\n\n`;
+            issueBody += critical.map((issue, i) => `${i+1}. ${issue}`).join('\n');
+            
+            if (version === '2.0') {
+              issueBody += `\n\n### 📋 Additional Context\n`;
+              const funcs = Object.keys(indexData.function_signatures || {});
+              issueBody += `- Missing functions might be renamed\n`;
+              issueBody += `- Current functions: ${funcs.slice(0, 5).join(', ')}...\n`;
+            }
+            
+            issueBody += `\n\n[View Full Report](TDS_DEV_INDEX.json)`;
             
             github.rest.issues.create({
               owner: context.repo.owner,
@@ -173,5 +259,7 @@ jobs:
         name: tds-analysis-results
         path: |
           TDS_DEV_INDEX.json
+          IMPLEMENTATION_REPORT.md
           MAPPING_BUGS.md
         retention-days: 30
+        if-no-files-found: warn  # Don't fail if some files missing
