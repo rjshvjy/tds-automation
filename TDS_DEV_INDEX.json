@@ -1,0 +1,273 @@
+{
+  "metadata": {
+    "version": "3.0",
+    "notebook_path": "TDS_Automation_V2.ipynb",
+    "last_scan": "2024-01-01T00:00:00",
+    "commit_hash": "initial",
+    "total_cells": 10,
+    "type": "widget_based",
+    "flow_type": "branching"
+  },
+  
+  "cells": {
+    "cell_0": {
+      "index": 0,
+      "title": "Imports & Installation",
+      "status": "working",
+      "imports": [
+        "import pandas as pd",
+        "import openpyxl",
+        "import PyPDF2",
+        "import ipywidgets as widgets"
+      ],
+      "defines": {
+        "functions": [],
+        "classes": []
+      },
+      "calls": [],
+      "dependencies": {
+        "backward": [],
+        "forward": []
+      },
+      "issues": [],
+      "mapping_related": false
+    }
+  },
+  
+  "dependency_graph": {
+    "execution_order": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "definitions": {
+      "extract_challan_data_from_pdf": "cell_1",
+      "read_tds_masters": "cell_2",
+      "ValidationEngine": "cell_4",
+      "GovernmentTemplateBuilder": "cell_5",
+      "ReconciliationReport": "cell_6"
+    },
+    "forward_dependencies": 0,
+    "circular_dependencies": [],
+    "missing_definitions": []
+  },
+  
+  "mapping_pipeline": {
+    "pdf_extraction": {
+      "functions": [
+        {
+          "cell": "cell_1",
+          "functions": ["extract_challan_data_from_pdf", "extract_all_challans"]
+        }
+      ],
+      "input_fields": [
+        "challan_no",
+        "bsr_code",
+        "tender_date",
+        "challan_amount",
+        "education_cess",
+        "surcharge",
+        "interest",
+        "fee",
+        "penalty",
+        "total_amount",
+        "mode_of_payment",
+        "cheque_no",
+        "nature_of_payment",
+        "minor_head"
+      ],
+      "output_structure": {
+        "type": "dict",
+        "fields": {
+          "challan_no": "string",
+          "bsr_code": "string (7 digits)",
+          "tender_date": "DD/MM/YYYY",
+          "amounts": "decimal",
+          "mode_of_payment": "uppercase string"
+        }
+      },
+      "issues": []
+    },
+    
+    "excel_processing": {
+      "functions": [
+        {
+          "cell": "cell_2",
+          "functions": ["read_tds_masters", "update_tds_masters_with_challans"]
+        }
+      ],
+      "column_mappings": {
+        "(415)": "Deductee Code",
+        "(415A)": "Section/Nature of Payment",
+        "(416)": "PAN",
+        "(417)": "Name",
+        "(418)": "Date of Payment",
+        "(419)": "Amount Paid",
+        "(420)": "Paid by Book Entry",
+        "(421)": "TDS Amount",
+        "(425D)": "BSR Code",
+        "(425E)": "Challan Serial No",
+        "(425F)": "Date Deposited",
+        "(427)": "Rate"
+      },
+      "transformations": [
+        "BSR padding to 7 digits",
+        "Challan number as string",
+        "Date formatting DD/MM/YYYY",
+        "Rate decimal to percentage",
+        "Amount ROUND_HALF_UP",
+        "Mode of payment uppercase"
+      ],
+      "issues": []
+    },
+    
+    "validation": {
+      "mandatory_fields": 20,
+      "validation_functions": [
+        {
+          "cell": "cell_4",
+          "functions": ["ValidationEngine", "validate_all"]
+        }
+      ],
+      "field_validators": {
+        "TAN": "AAAA99999A format",
+        "PAN": "AAAAA9999A format",
+        "Email": "email format",
+        "Pincode": "6 digits",
+        "Phone": "10 digits"
+      },
+      "issues": []
+    },
+    
+    "template_generation": {
+      "functions": [
+        {
+          "cell": "cell_5",
+          "functions": ["GovernmentTemplateBuilder", "create_template", "fill_template"]
+        }
+      ],
+      "sheet_mappings": {
+        "INPUT-DEDUCTOR DETAILS": "DEDUCTOR DETAILS",
+        "TDS PARTIES": "DEDUCTEE BREAK-UP",
+        "Challan Details": "CHALLAN DETAILS"
+      },
+      "issues": []
+    }
+  },
+  
+  "widget_flow": {
+    "states": {
+      "initial": "Start widget displayed",
+      "template_download": "User downloads blank template",
+      "stop_program": "Program stops after download",
+      "upload_files": "User uploads Masters + PDFs",
+      "processing": "System processes files",
+      "complete": "Results ready for download"
+    },
+    "transitions": {
+      "initial->template_download": "User chooses Option 1",
+      "template_download->stop_program": "Template downloaded",
+      "initial->upload_files": "User chooses Option 2",
+      "upload_files->processing": "Valid files uploaded",
+      "processing->complete": "Processing successful"
+    },
+    "breakpoints": ["stop_program"],
+    "issues": []
+  },
+  
+  "issues": {
+    "critical": [],
+    "warnings": [],
+    "mapping_issues": [],
+    "fixed": [
+      "NaN issue resolved with openpyxl",
+      "Leading zeros preserved",
+      "Rate formatting fixed",
+      "Column codes with - prefix handled"
+    ]
+  },
+  
+  "test_coverage": {
+    "test_functions": [
+      "test_pdf_extraction_single",
+      "test_pdf_deduplication",
+      "test_tds_masters_reading",
+      "test_date_extraction",
+      "test_validation"
+    ],
+    "coverage_count": 5,
+    "has_pdf_tests": true,
+    "has_excel_tests": true,
+    "has_validation_tests": true
+  },
+  
+  "pdf_excel_flow": {
+    "sequence": [
+      {
+        "step": 1,
+        "name": "PDF Extraction",
+        "input": "PDF files",
+        "function": "extract_all_challans",
+        "output": "challan_data_list"
+      },
+      {
+        "step": 2,
+        "name": "Masters Reading",
+        "input": "TDS_Masters.xlsx",
+        "function": "read_tds_masters",
+        "output": "tds_masters_data"
+      },
+      {
+        "step": 3,
+        "name": "Validation",
+        "input": "tds_masters_data",
+        "function": "ValidationEngine.validate_all",
+        "output": "validation_results"
+      },
+      {
+        "step": 4,
+        "name": "Update Masters",
+        "input": ["tds_masters_data", "challan_data_list"],
+        "function": "update_tds_masters_with_challans",
+        "output": "updated_masters_data"
+      },
+      {
+        "step": 5,
+        "name": "Generate Template",
+        "input": "updated_masters_data",
+        "function": "GovernmentTemplateBuilder.fill_template",
+        "output": "govt_template"
+      },
+      {
+        "step": 6,
+        "name": "Generate Report",
+        "input": "validation_results",
+        "function": "ReconciliationReport.generate_report",
+        "output": "reconciliation_report"
+      }
+    ],
+    "data_transformations": {
+      "BSR_code": {
+        "from": "numeric/string",
+        "to": "7-digit padded string",
+        "method": "str(bsr).zfill(7)"
+      },
+      "challan_no": {
+        "from": "numeric/string",
+        "to": "string",
+        "method": "str(challan_no)"
+      },
+      "dates": {
+        "from": "various formats",
+        "to": "DD/MM/YYYY",
+        "method": "strftime('%d/%m/%Y')"
+      },
+      "rate": {
+        "from": "decimal (0.1)",
+        "to": "percentage (10)",
+        "method": "rate * 100"
+      },
+      "amount": {
+        "from": "float",
+        "to": "rounded integer",
+        "method": "ROUND_HALF_UP"
+      }
+    }
+  }
+}
