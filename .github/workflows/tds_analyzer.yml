@@ -1,11 +1,18 @@
 name: TDS Notebook Analyzer
 
+# Workflow for rjshvjy/tds-automation repository
+# Analyzes TDS_Automation_V2.ipynb for dependencies and PDF→Excel mapping issues
+# Location: .github/workflows/tds_analyzer.yml
+
 on:
   push:
     branches: [ main, dev ]
     paths:
-      - '**.ipynb'
+      - 'TDS_Automation_V2.ipynb'  # Main notebook in root
       - 'scripts/**.py'
+      - 'tdsapp.py'  # Streamlit app
+      - 'requirements.txt'
+      - 'readme.md'
   pull_request:
     branches: [ main ]
   workflow_dispatch:  # Manual trigger option
@@ -16,7 +23,7 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 2  # Need previous commit for comparison
     
@@ -28,7 +35,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install nbformat pandas openpyxl ast-comments jsonschema
+        pip install nbformat pandas openpyxl jsonschema
         pip install PyGithub  # For creating issues
     
     - name: Create scripts directory if not exists
@@ -37,6 +44,7 @@ jobs:
     - name: Run notebook analyzer
       id: analyzer
       run: |
+        # Analyze the main notebook TDS_Automation_V2.ipynb in repo root
         python scripts/notebook_analyzer.py \
           --notebook "TDS_Automation_V2.ipynb" \
           --output "TDS_DEV_INDEX.json" \
@@ -70,7 +78,8 @@ jobs:
         git add MAPPING_BUGS.md 2>/dev/null || true
         git diff --staged --quiet || git commit -m "🤖 Auto-update: TDS index and bug tracking
         
-        - Analyzed notebook structure
+        Repository: rjshvjy/tds-automation
+        - Analyzed TDS_Automation_V2.ipynb
         - Updated dependency graph
         - Tracked PDF→Excel mappings
         - Found $(python -c "import json; data=json.load(open('TDS_DEV_INDEX.json')); print(len(data.get('issues', {}).get('critical', [])))" 2>/dev/null || echo 0) critical issues"
@@ -90,6 +99,8 @@ jobs:
           const mappingIssues = issues.mapping_issues || [];
           
           let comment = '## 📊 TDS Notebook Analysis Report\n\n';
+          comment += '**Repository:** rjshvjy/tds-automation\n';
+          comment += '**Notebook:** TDS_Automation_V2.ipynb\n\n';
           comment += `### Summary\n`;
           comment += `- **Critical Issues:** ${critical.length}\n`;
           comment += `- **Warnings:** ${warnings.length}\n`;
@@ -131,11 +142,13 @@ jobs:
           
           if (critical.length > 0) {
             const issueBody = `## 🐛 Critical Issues Found in TDS Notebook\n\n` +
+              `**Repository:** rjshvjy/tds-automation\n` +
+              `**File:** TDS_Automation_V2.ipynb\n\n` +
               `The automated analyzer found ${critical.length} critical issues:\n\n` +
               critical.map((issue, i) => `${i+1}. ${issue}`).join('\n') +
               `\n\n### Affected Areas\n` +
-              `- PDF Data Extraction\n` +
-              `- Excel Column Mappings\n` +
+              `- PDF Data Extraction (PyPDF2)\n` +
+              `- Excel Column Mappings (openpyxl)\n` +
               `- Data Transformations\n\n` +
               `[View Full Report](TDS_DEV_INDEX.json)`;
             
@@ -149,7 +162,7 @@ jobs:
           }
     
     - name: Upload analysis artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: tds-analysis-results
         path: |
