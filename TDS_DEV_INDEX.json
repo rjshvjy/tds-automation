@@ -1,80 +1,1081 @@
 {
   "metadata": {
-    "notebook_version": "V2",
-    "last_analyzed": "2024-01-15",
-    "github_integration_ready": false
+    "analyzer_version": "2.0",
+    "purpose": "AI coding assistance with implementation details",
+    "notebook_path": "TDS_Automation_V2.ipynb",
+    "last_scan": "2025-08-14T17:39:06.046406",
+    "total_cells": 8,
+    "code_cells": 7,
+    "commit_hash": "32855c75"
   },
-  
   "implementation_details": {
-    "cell_2_pdf_extraction": {
-      "main_function": "extract_challan_data_from_pdf",
-      "input": "pdf_path (string)",
-      "output_schema": {
-        "tan": "string",
-        "nature_of_payment": "string (e.g., '94A', '94C')",
-        "bsr_code": "string (7 digits with leading zeros)",
-        "challan_no": "string (preserved leading zeros)",
-        "tax_amount": "string (numeric)",
-        "tender_date": "string (DD/MM/YYYY)"
-      },
-      "regex_patterns_used": {
-        "nature_of_payment": "r'Nature of Payment\\s*:\\s*(\\d+[A-Z])'",
-        "bsr_code": "r'BSR code\\s*:\\s*([\\d]+)'"
-      },
-      "deduplication_logic": "By challan_no using dict"
+    "cell_1": {
+      "cell_index": 1,
+      "purpose": "Cell 1: Install required libraries and import modules",
+      "key_operations": [
+        "Excel reading"
+      ],
+      "data_flow": [],
+      "external_libs": [
+        "PyPDF2",
+        "pandas",
+        "numpy",
+        "re",
+        "os",
+        "datetime",
+        "openpyxl",
+        "openpyxl",
+        "openpyxl.utils",
+        "openpyxl.styles",
+        "warnings"
+      ]
     },
-    
-    "cell_3_excel_processing": {
-      "critical_function": "read_tds_masters",
-      "uses_openpyxl": true,
-      "data_only_mode": true,
-      "decimal_handling": "Decimal with ROUND_HALF_UP",
-      "column_search_strategy": [
-        "1. Look for (code) format in row 2",
-        "2. Look for -code format",  
-        "3. Fallback to column name matching"
+    "cell_2": {
+      "cell_index": 2,
+      "purpose": "Cell 2: Functions to extract data from PDF challans - FIXED AMOUNT EXTRACTION",
+      "key_operations": [
+        "PDF extraction"
+      ],
+      "data_flow": [],
+      "external_libs": []
+    },
+    "cell_3": {
+      "cell_index": 3,
+      "purpose": "Cell 3: Functions to read and update Excel files - FIXED WITH PROPER COLUMN CODES AND TDS PRESERVATION",
+      "key_operations": [
+        "Excel reading",
+        "Data validation",
+        "Excel updating"
+      ],
+      "data_flow": [],
+      "external_libs": [
+        "math",
+        "decimal"
+      ]
+    },
+    "cell_4": {
+      "cell_index": 4,
+      "purpose": "Cell 4: Main processing function that coordinates all steps",
+      "key_operations": [
+        "Excel reading",
+        "Data validation",
+        "Excel updating",
+        "Main processing"
+      ],
+      "data_flow": [],
+      "external_libs": [
+        "math",
+        "decimal"
+      ]
+    },
+    "cell_5": {
+      "cell_index": 5,
+      "purpose": "Cell 5: Functions to generate output file - COMPLETE FIX",
+      "key_operations": [
+        "Excel reading",
+        "Data validation"
+      ],
+      "data_flow": [],
+      "external_libs": [
+        "math"
+      ]
+    },
+    "cell_6": {
+      "cell_index": 6,
+      "purpose": "Cell 6: Testing individual components and troubleshooting - FIXED VERSION",
+      "key_operations": [
+        "PDF extraction",
+        "Excel reading"
+      ],
+      "data_flow": [],
+      "external_libs": []
+    },
+    "cell_7": {
+      "cell_index": 7,
+      "purpose": "Cell 7: Interactive file upload and processing",
+      "key_operations": [
+        "PDF extraction",
+        "Main processing"
+      ],
+      "data_flow": [],
+      "external_libs": [
+        "os",
+        "zipfile",
+        "shutil",
+        "google.colab",
+        "pandas",
+        "datetime"
       ]
     }
   },
-  
-  "data_flow": {
-    "pipeline": [
-      {"step": 1, "cell": 2, "output": "challan_data_list"},
-      {"step": 2, "cell": 3, "output": "tds_masters_data"},
-      {"step": 3, "cell": 4, "output": "updated_masters_data"},
-      {"step": 4, "cell": 5, "output": "final_output_file"}
-    ]
-  },
-  
-  "github_requirements": {
-    "templates_needed": [
-      {
-        "file": "TDS_Masters_Template.xlsx",
-        "sheets": ["TDS CODES", "TDS PARTIES", "Challan Details", "TDS RATES"],
-        "must_have": "Column codes in row 2"
-      },
-      {
-        "file": "TDS_Output_Template.xlsx",
-        "sheets": ["DEDUCTOR DETAILS", "CHALLAN DETAILS", "DEDUCTEE BREAK-UP"],
-        "must_have": "Government format with formulas"
-      }
-    ],
-    "api_calls": [
-      "GET https://raw.githubusercontent.com/rjshvjy/tds-automation/main/templates/TDS_Masters_Template.xlsx"
-    ]
-  },
-  
-  "test_data_samples": {
-    "challan_example": {
-      "nature_of_payment": "94A",
-      "challan_no": "06501",
-      "tax_amount": "3917",
-      "bsr_code": "0240020"
+  "function_signatures": {
+    "extract_challan_data_from_pdf": {
+      "cell": 2,
+      "parameters": [
+        {
+          "name": "pdf_path",
+          "default": null
+        }
+      ],
+      "docstring": "Extract challan data from a single PDF file\n    Returns a dictionary with all challan details",
+      "returns": [
+        "challan_data"
+      ],
+      "category": "PDF data extraction",
+      "calls_functions": [
+        "extract_challan_data_from_pdf"
+      ]
     },
-    "validation_rules": {
-      "pan_format": "^[A-Z]{5}[0-9]{4}[A-Z]$",
-      "amount_tolerance": 1,
-      "date_format": "DD/MM/YYYY"
+    "extract_all_challans": {
+      "cell": 2,
+      "parameters": [
+        {
+          "name": "pdf_folder_path",
+          "default": null
+        }
+      ],
+      "docstring": "Extract data from all PDF files in a folder and DEDUPLICATE by challan number\n    Returns a list of dictionaries, one for each UNIQUE challan",
+      "returns": [
+        "all_challan_data",
+        "all_challan_data"
+      ],
+      "category": "Bulk PDF processing with deduplication",
+      "calls_functions": [
+        "extract_all_challans",
+        "extract_challan_data_from_pdf"
+      ]
+    },
+    "test_extraction": {
+      "cell": 2,
+      "parameters": [],
+      "docstring": "Test the extraction with a sample text",
+      "returns": [],
+      "category": "utility",
+      "calls_functions": [
+        "extract_all_challans"
+      ]
+    },
+    "read_tds_masters": {
+      "cell": 3,
+      "parameters": [
+        {
+          "name": "file_path",
+          "default": null
+        }
+      ],
+      "docstring": "Read the TDS Masters Excel file and return data from all sheets\n    FIXED: Uses openpyxl with data_only=True to read static values, avoiding type inference issues",
+      "returns": [
+        "data from all sheets",
+        "{",
+        "None"
+      ],
+      "category": "Excel file reading",
+      "calls_functions": [
+        "read_tds_masters"
+      ]
+    },
+    "update_tds_masters_with_challans": {
+      "cell": 3,
+      "parameters": [
+        {
+          "name": "tds_masters_data",
+          "default": null
+        },
+        {
+          "name": "challan_data_list",
+          "default": null
+        }
+      ],
+      "docstring": "Update TDS Masters with challan information\n    FIXED: Uses data_only=True to preserve static TDS values, writes BSR/challan as strings",
+      "returns": [
+        "read_tds_masters(output_file)",
+        "None"
+      ],
+      "category": "Challan integration",
+      "calls_functions": [
+        "update_tds_masters_with_challans",
+        "read_tds_masters"
+      ]
+    },
+    "validate_tds_totals": {
+      "cell": 3,
+      "parameters": [
+        {
+          "name": "tds_masters_data",
+          "default": null
+        },
+        {
+          "name": "challan_data_list",
+          "default": null
+        }
+      ],
+      "docstring": "Validate that party-wise TDS totals match challan amounts\n    Uses column codes to identify the correct columns",
+      "returns": [
+        "False",
+        "validation_passed",
+        "False"
+      ],
+      "category": "Amount reconciliation",
+      "calls_functions": [
+        "validate_tds_totals"
+      ]
+    },
+    "get_output_filename_from_masters": {
+      "cell": 4,
+      "parameters": [
+        {
+          "name": "tds_masters_data",
+          "default": null
+        }
+      ],
+      "docstring": "Extract month and year from the first payment date in TDS Masters\n    to generate output filename as TDS_Month_Year.xlsx",
+      "returns": [
+        "f\"TDS_{month_name}_{year}.xlsx\"",
+        "f\"TDS_{current_date.strftime('%B')}_{current_date.strftime('%Y')}.xlsx\"",
+        "f\"TDS_{current_date.strftime('%B')}_{current_date.strftime('%Y')}.xlsx\""
+      ],
+      "category": "utility",
+      "calls_functions": []
+    },
+    "update_deductee_breakup": {
+      "cell": 4,
+      "parameters": [
+        {
+          "name": "ws",
+          "default": null
+        },
+        {
+          "name": "tds_masters_data",
+          "default": null
+        },
+        {
+          "name": "challan_data_list",
+          "default": null
+        }
+      ],
+      "docstring": "Helper function to update DEDUCTEE BREAK-UP sheet\n    FIXED: Rate formatting to show 2 decimal places (e.g., 0.10%), preserve totals row, delete overflow rows after totals",
+      "returns": [],
+      "category": "Deductee sheet update",
+      "calls_functions": [
+        "update_deductee_breakup"
+      ]
+    },
+    "update_challan_details": {
+      "cell": 4,
+      "parameters": [
+        {
+          "name": "ws",
+          "default": null
+        },
+        {
+          "name": "challan_data_list",
+          "default": null
+        }
+      ],
+      "docstring": "Helper function to update CHALLAN DETAILS sheet",
+      "returns": [],
+      "category": "Challan sheet update",
+      "calls_functions": [
+        "update_challan_details"
+      ]
+    },
+    "process_tds_returns": {
+      "cell": 4,
+      "parameters": [
+        {
+          "name": "pdf_folder_path",
+          "default": null
+        },
+        {
+          "name": "masters_file_path",
+          "default": null
+        },
+        {
+          "name": "template_file_path",
+          "default": null
+        }
+      ],
+      "docstring": "Main function to process TDS returns\n    FIXED: Challan amounts rounded up with ROUND_HALF_UP",
+      "returns": [
+        "None",
+        "None",
+        "None",
+        "{"
+      ],
+      "category": "Main orchestration",
+      "calls_functions": [
+        "process_tds_returns",
+        "extract_all_challans",
+        "read_tds_masters",
+        "validate_tds_totals",
+        "update_tds_masters_with_challans",
+        "update_challan_details",
+        "update_deductee_breakup",
+        "validate_tds_totals",
+        "process_tds_returns"
+      ]
+    },
+    "generate_output_file": {
+      "cell": 5,
+      "parameters": [
+        {
+          "name": "tds_masters_data",
+          "default": null
+        },
+        {
+          "name": "challan_data_list",
+          "default": null
+        },
+        {
+          "name": "template_path",
+          "default": null
+        },
+        {
+          "name": "output_path",
+          "default": "None"
+        }
+      ],
+      "docstring": "Generate output file from TDS Masters data and challan information\n    Handles dynamic rows and preserves formulas",
+      "returns": [
+        "output_path",
+        "None"
+      ],
+      "category": "Output generation",
+      "calls_functions": [
+        "generate_output_file"
+      ]
+    },
+    "find_totals_row": {
+      "cell": 5,
+      "parameters": [
+        {
+          "name": "ws",
+          "default": null
+        },
+        {
+          "name": "start_row",
+          "default": "4"
+        },
+        {
+          "name": "end_row",
+          "default": "None"
+        }
+      ],
+      "docstring": "Find the row containing totals (usually has 'TOTAL' text or SUM formulas)",
+      "returns": [
+        "row",
+        "row",
+        "None"
+      ],
+      "category": "utility",
+      "calls_functions": []
+    },
+    "update_challan_details_proper": {
+      "cell": 5,
+      "parameters": [
+        {
+          "name": "ws",
+          "default": null
+        },
+        {
+          "name": "challan_data_list",
+          "default": null
+        }
+      ],
+      "docstring": "Update the CHALLAN DETAILS sheet with proper TOTAL row handling\n    FIXED: Preserves TOTAL row when clearing data and writes BSR/Challan as strings",
+      "returns": [],
+      "category": "utility",
+      "calls_functions": []
+    },
+    "update_deductee_breakup_sheet_dynamic": {
+      "cell": 5,
+      "parameters": [
+        {
+          "name": "ws",
+          "default": null
+        },
+        {
+          "name": "tds_masters_data",
+          "default": null
+        },
+        {
+          "name": "challan_data_list",
+          "default": null
+        }
+      ],
+      "docstring": "Update the DEDUCTEE BREAK-UP sheet with dynamic row management\n    FIXED: Properly handles rate formatting and preserves leading zeros",
+      "returns": [],
+      "category": "utility",
+      "calls_functions": []
+    },
+    "test_pdf_extraction_single": {
+      "cell": 6,
+      "parameters": [
+        {
+          "name": "pdf_path",
+          "default": null
+        }
+      ],
+      "docstring": "Test extraction from a single PDF file",
+      "returns": [
+        "data"
+      ],
+      "category": "utility",
+      "calls_functions": [
+        "extract_challan_data_from_pdf"
+      ]
+    },
+    "test_pdf_deduplication": {
+      "cell": 6,
+      "parameters": [
+        {
+          "name": "pdf_folder",
+          "default": null
+        }
+      ],
+      "docstring": "Test PDF extraction with deduplication",
+      "returns": [
+        "deduplicated_challans"
+      ],
+      "category": "utility",
+      "calls_functions": [
+        "extract_challan_data_from_pdf",
+        "extract_all_challans"
+      ]
+    },
+    "test_tds_masters_reading": {
+      "cell": 6,
+      "parameters": [
+        {
+          "name": "file_path",
+          "default": null
+        }
+      ],
+      "docstring": "Test reading TDS Masters file",
+      "returns": [
+        "data"
+      ],
+      "category": "utility",
+      "calls_functions": [
+        "read_tds_masters"
+      ]
+    },
+    "test_date_extraction": {
+      "cell": 6,
+      "parameters": [
+        {
+          "name": "tds_masters_data",
+          "default": null
+        }
+      ],
+      "docstring": "Test date extraction for output filename",
+      "returns": [],
+      "category": "utility",
+      "calls_functions": []
+    },
+    "create_test_summary": {
+      "cell": 6,
+      "parameters": [
+        {
+          "name": "tds_masters_data",
+          "default": null
+        },
+        {
+          "name": "challan_data_list",
+          "default": null
+        }
+      ],
+      "docstring": "Create a summary report of the data before processing",
+      "returns": [
+        "# Challan summary (now with unique challans only)"
+      ],
+      "category": "utility",
+      "calls_functions": []
+    },
+    "clear_uploads": {
+      "cell": 7,
+      "parameters": [],
+      "docstring": "Clear all uploaded files and reset directories",
+      "returns": [],
+      "category": "utility",
+      "calls_functions": []
+    },
+    "upload_zip_file": {
+      "cell": 7,
+      "parameters": [],
+      "docstring": "Upload and extract a zip file containing PDFs and Excel files",
+      "returns": [],
+      "category": "utility",
+      "calls_functions": []
+    },
+    "process_uploaded_files": {
+      "cell": 7,
+      "parameters": [],
+      "docstring": "Process all uploaded files",
+      "returns": [
+        "if not UPLOADED_FILES['tds_masters']:",
+        "if not UPLOADED_FILES['template']:",
+        "print(\"\\n✅ All files uploaded successfully!\")"
+      ],
+      "category": "utility",
+      "calls_functions": [
+        "extract_challan_data_from_pdf",
+        "process_tds_returns",
+        "extract_all_challans"
+      ]
+    },
+    "start_interactive_upload": {
+      "cell": 7,
+      "parameters": [],
+      "docstring": "Start the interactive upload process",
+      "returns": [],
+      "category": "utility",
+      "calls_functions": []
     }
+  },
+  "data_structures": {
+    "tds_masters_data": {
+      "type": "dict",
+      "description": "Main data container from read_tds_masters()",
+      "keys": {
+        "tds_codes": "DataFrame - TDS code definitions",
+        "tds_parties": "DataFrame - Party-wise TDS details",
+        "challan_details": "DataFrame - Challan information",
+        "tds_rates": "DataFrame - TDS rate chart",
+        "file_path": "str - Path to Excel file",
+        "column_code_map": "dict - Code to column index mapping",
+        "code_to_column_name": "dict - Code to column name mapping",
+        "code_row": "int - Row number containing column codes"
+      },
+      "critical_operations": [
+        "tds_parties DataFrame is primary data source",
+        "column_code_map enables dynamic column access",
+        "Uses Decimal for precise amount calculations"
+      ]
+    },
+    "challan_data": {
+      "type": "dict",
+      "description": "Single challan extracted from PDF",
+      "keys": {
+        "tan": "str - TAN number",
+        "nature_of_payment": "str - Payment code (94A, 94C, etc.)",
+        "cin": "str - CIN number",
+        "bsr_code": "str - 7-digit BSR code with leading zeros",
+        "challan_no": "str - Challan number (preserved as string)",
+        "tender_date": "str - Date in DD/MM/YYYY format",
+        "mode_of_payment": "str - UPPERCASE payment mode",
+        "tax_amount": "str - Tax amount (numeric string)",
+        "surcharge": "str - Surcharge amount",
+        "cess": "str - Cess amount",
+        "interest": "str - Interest amount",
+        "penalty": "str - Penalty amount",
+        "fee_234e": "str - Fee under section 234E",
+        "total_amount": "str - Total amount",
+        "file_name": "str - Source PDF filename"
+      }
+    },
+    "dataframe_shapes": {
+      "tds_parties": {
+        "typical_shape": "(20 rows, 11+ columns)",
+        "key_columns": [
+          "Sr.No",
+          "Deductee Code",
+          "Section/Nature of Payment",
+          "PAN",
+          "Name",
+          "Date of Payment",
+          "Amount Paid",
+          "Paid by Book Entry",
+          "TDS Amount",
+          "Surcharge",
+          "Cess",
+          "Total Tax Deducted",
+          "Total Tax Deposited",
+          "Interest",
+          "Others",
+          "Total",
+          "BSR Code",
+          "Challan Serial No",
+          "Date Deposited",
+          "Date of Deduction",
+          "Rate",
+          "Reason for non-deduction"
+        ]
+      },
+      "challan_details": {
+        "typical_shape": "(4 rows, 13 columns)",
+        "columns": [
+          "Sr.No",
+          "Section Code",
+          "TDS",
+          "Surcharge",
+          "Cess",
+          "Interest",
+          "Penalty",
+          "Total",
+          "Mode",
+          "BSR Code",
+          "Date",
+          "Challan No",
+          "Book Entry"
+        ]
+      }
+    }
+  },
+  "excel_mappings": {
+    "tds_parties_sheet": {
+      "code_row": 2,
+      "data_start_row": 3,
+      "column_detection_strategy": [
+        "1. Search for (XXX) format in code_row",
+        "2. Search for -XXX format in code_row",
+        "3. Fallback to column name matching"
+      ],
+      "critical_columns": {
+        "(414)": {
+          "name": "Sr.No",
+          "required": false,
+          "data_type": "String"
+        },
+        "(415)": {
+          "name": "Deductee Code",
+          "required": true,
+          "data_type": "String (preserve format)"
+        },
+        "(415A)": {
+          "name": "Section/Nature of Payment",
+          "required": true,
+          "data_type": "String"
+        },
+        "(416)": {
+          "name": "PAN",
+          "required": true,
+          "data_type": "String"
+        },
+        "(417)": {
+          "name": "Name",
+          "required": true,
+          "data_type": "String"
+        },
+        "(418)": {
+          "name": "Date of Payment",
+          "required": true,
+          "data_type": "Date"
+        },
+        "(419)": {
+          "name": "Amount Paid",
+          "required": true,
+          "data_type": "Decimal/numeric"
+        },
+        "(420)": {
+          "name": "Paid by Book Entry",
+          "required": false,
+          "data_type": "String"
+        },
+        "(421)": {
+          "name": "TDS Amount",
+          "required": true,
+          "data_type": "Decimal/numeric"
+        },
+        "(422)": {
+          "name": "Surcharge",
+          "required": false,
+          "data_type": "Decimal/numeric"
+        },
+        "(423)": {
+          "name": "Cess",
+          "required": false,
+          "data_type": "Decimal/numeric"
+        },
+        "(424)": {
+          "name": "Total Tax Deducted",
+          "required": false,
+          "data_type": "Decimal/numeric"
+        },
+        "(425)": {
+          "name": "Total Tax Deposited",
+          "required": false,
+          "data_type": "Decimal/numeric"
+        },
+        "(425A)": {
+          "name": "Interest",
+          "required": false,
+          "data_type": "String"
+        },
+        "(425B)": {
+          "name": "Others",
+          "required": false,
+          "data_type": "String"
+        },
+        "(425C)": {
+          "name": "Total",
+          "required": false,
+          "data_type": "String"
+        },
+        "(425D)": {
+          "name": "BSR Code",
+          "required": false,
+          "data_type": "String (preserve format)"
+        },
+        "(425E)": {
+          "name": "Challan Serial No",
+          "required": false,
+          "data_type": "String (preserve format)"
+        },
+        "(425F)": {
+          "name": "Date Deposited",
+          "required": false,
+          "data_type": "Date"
+        },
+        "(426)": {
+          "name": "Date of Deduction",
+          "required": false,
+          "data_type": "Date"
+        },
+        "(427)": {
+          "name": "Rate",
+          "required": false,
+          "data_type": "Float/percentage"
+        },
+        "(428)": {
+          "name": "Reason for non-deduction",
+          "required": false,
+          "data_type": "String"
+        }
+      },
+      "column_name_fallbacks": {
+        "(415)": [
+          "Deductee Code",
+          "Individual/Company",
+          "Indiv/Comp",
+          "Code"
+        ],
+        "(415A)": [
+          "Section Under Payment Made",
+          "Type of Payment",
+          "Nature of Payment"
+        ],
+        "(416)": [
+          "PAN of the Deductee",
+          "PAN",
+          "PAN No"
+        ],
+        "(417)": [
+          "Name of the Deductee",
+          "Deductee Name",
+          "Name"
+        ],
+        "(418)": [
+          "Date of Payment/credit",
+          "Payment Date",
+          "Date of Payment"
+        ],
+        "(419)": [
+          "Amount Paid/Credited",
+          "Amount Paid",
+          "Gross Amount"
+        ],
+        "(421)": [
+          "TDS",
+          "Tax Deducted",
+          "TDS Amount",
+          "TDS Rs."
+        ],
+        "(425D)": [
+          "BSR Code",
+          "BSR",
+          "Bank BSR Code"
+        ],
+        "(425E)": [
+          "Challan Serial No",
+          "Challan No",
+          "Challan Number"
+        ],
+        "(425F)": [
+          "Date on which deposited",
+          "Date Deposited",
+          "Deposit Date"
+        ],
+        "(427)": [
+          "TDS Deducted Rates %",
+          "TDS Rate",
+          "Rate %",
+          "Rate"
+        ]
+      }
+    },
+    "challan_details_sheet": {
+      "header_row": 1,
+      "data_start_row": 3,
+      "columns": {
+        "1": "Sr.No",
+        "2": "Nature of Payment",
+        "3": "Tax Amount",
+        "4": "Surcharge",
+        "5": "Cess",
+        "6": "Interest",
+        "7": "Penalty",
+        "8": "Total (Formula)",
+        "9": "Mode of Payment",
+        "10": "BSR Code",
+        "11": "Tender Date",
+        "12": "Challan No",
+        "13": "Book Entry"
+      }
+    },
+    "output_sheets": {
+      "DEDUCTEE BREAK-UP": {
+        "data_start": 4,
+        "has_totals_row": true,
+        "dynamic_rows": true,
+        "formula_columns": [
+          "L",
+          "M",
+          "P"
+        ]
+      },
+      "CHALLAN DETAILS": {
+        "data_start": 4,
+        "has_totals_row": true,
+        "dynamic_rows": true,
+        "formula_columns": [
+          "H"
+        ]
+      }
+    }
+  },
+  "pdf_patterns": {
+    "extraction_patterns": {
+      "tan": "TAN\\\\s*:\\\\s*([A-Z0-9]+)",
+      "nature_of_payment": "Nature of Payment\\\\s*:\\\\s*(\\\\d+[A-Z])",
+      "cin": "CIN\\\\s*:\\\\s*([A-Z0-9]+)",
+      "bsr_code": "BSR code\\\\s*:\\\\s*([\\\\d]+)",
+      "challan_no": "Challan No\\\\s*:\\\\s*([\\\\d]+)",
+      "tender_date": "Tender Date\\\\s*:\\\\s*(\\\\d{2}/\\\\d{2}/\\\\d{4})",
+      "mode_of_payment": "Mode of Payment\\\\s*:\\\\s*([^\\\\n]+)"
+    },
+    "amount_extraction": {
+      "strategy": "Multiple fallback patterns",
+      "primary_patterns": [
+        "A\\\\s+Tax\\\\s+₹\\\\s*([\\\\d,]+)",
+        "Tax\\\\s+₹\\\\s*([\\\\d,]+)",
+        "A\\\\s+Tax[^0-9]+([\\\\d,]+)"
+      ],
+      "fallback_patterns": [
+        "Amount \\\\(in Rs\\\\.\\\\)\\\\s*:\\\\s*₹\\\\s*([\\\\d,]+)",
+        "Amount.*?₹\\\\s*([\\\\d,]+)",
+        "Amount.*?Rs.*?([\\\\d,]+)"
+      ]
+    },
+    "post_processing": {
+      "bsr_code": "zfill(7) - Pad to 7 digits",
+      "challan_no": "Preserve as string",
+      "amounts": "Remove commas, convert to string",
+      "mode_of_payment": "Convert to UPPERCASE",
+      "dates": "Keep as DD/MM/YYYY string"
+    },
+    "deduplication": {
+      "method": "Dictionary by challan_no",
+      "validation": "Check tax amounts match for duplicates"
+    }
+  },
+  "validation_rules": {
+    "pan_validation": {
+      "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]$",
+      "description": "5 letters + 4 digits + 1 letter",
+      "example": "ABCDE1234F"
+    },
+    "amount_validation": {
+      "tolerance": 1,
+      "description": "Party totals must match challan totals within 1 rupee",
+      "rounding": "ROUND_HALF_UP using Decimal",
+      "implementation": "math.ceil() for final amounts"
+    },
+    "date_formats": {
+      "input": "DD/MM/YYYY",
+      "excel": "DD/MM/YYYY",
+      "parsing": "datetime.strptime(date_str, '%d/%m/%Y')"
+    },
+    "bsr_code": {
+      "length": 7,
+      "padding": "Leading zeros",
+      "storage": "String to preserve zeros"
+    },
+    "rate_formatting": {
+      "input": "Decimal (0.1) or percentage (10)",
+      "conversion": "If < 1, multiply by 100",
+      "output": "Format as '10%'"
+    },
+    "mandatory_fields": {
+      "tds_parties": [
+        "(415A)",
+        "(416)",
+        "(417)",
+        "(418)",
+        "(419)",
+        "(421)"
+      ],
+      "challan": [
+        "nature_of_payment",
+        "challan_no",
+        "tax_amount",
+        "tender_date"
+      ]
+    }
+  },
+  "github_integration": {
+    "repository": "rjshvjy/tds-automation",
+    "branch": "main",
+    "template_structure": {
+      "location": "templates/",
+      "files_needed": [
+        {
+          "name": "TDS_Masters_Template.xlsx",
+          "purpose": "Blank template for user to fill",
+          "sheets": [
+            "TDS CODES",
+            "TDS PARTIES",
+            "Challan Details",
+            "TDS RATES"
+          ],
+          "requirements": [
+            "Column codes in row 2",
+            "Headers in row 1",
+            "Empty data rows starting row 3"
+          ]
+        },
+        {
+          "name": "TDS_Output_Template.xlsx",
+          "purpose": "Government format for final output",
+          "sheets": [
+            "DEDUCTOR DETAILS",
+            "CHALLAN DETAILS",
+            "DEDUCTEE BREAK-UP"
+          ],
+          "requirements": [
+            "Government-specified column layout",
+            "Formulas in totals rows",
+            "Date formatting DD/MM/YYYY"
+          ]
+        }
+      ]
+    },
+    "api_endpoints": {
+      "raw_content": "https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}",
+      "example": "https://raw.githubusercontent.com/rjshvjy/tds-automation/main/templates/TDS_Masters_Template.xlsx"
+    },
+    "python_implementation": {
+      "library": "requests",
+      "binary_mode": true,
+      "error_handling": "Network failures, 404 errors",
+      "caching": "Optional local cache in /tmp/"
+    }
+  },
+  "test_samples": {
+    "pdf_challan": {
+      "94A": {
+        "nature_of_payment": "94A",
+        "challan_no": "06501",
+        "tax_amount": "3917",
+        "bsr_code": "0240020",
+        "tender_date": "15/06/2025"
+      },
+      "94C": {
+        "nature_of_payment": "94C",
+        "challan_no": "06737",
+        "tax_amount": "3288",
+        "bsr_code": "0240020",
+        "tender_date": "15/06/2025"
+      }
+    },
+    "tds_party_row": {
+      "Deductee Code": "02",
+      "Section Under Payment Made": "94A",
+      "PAN of the Deductee": "ABCDE1234F",
+      "Name of the deductee": "SRIHARI P",
+      "Date of Payment/credit": "2025-06-01",
+      "Amount Paid/Credited Rs.": 12500,
+      "TDS Rs.": 1250,
+      "Rate at which deducted": 0.1
+    },
+    "validation_cases": {
+      "valid_pan": "ABCDE1234F",
+      "invalid_pan": "ABC123",
+      "valid_bsr": "0240020",
+      "valid_challan": "06501"
+    }
+  },
+  "error_handling": {
+    "pdf_extraction": {
+      "pattern": "try-except with error key in return dict",
+      "fallback": "Return empty dict with error message",
+      "logging": "Print error with filename"
+    },
+    "excel_reading": {
+      "pattern": "try-except with traceback.print_exc()",
+      "fallback": "Return None",
+      "validation": "Check if sheets exist before reading"
+    },
+    "file_operations": {
+      "permission_errors": "Handle 'Permission denied' for locked files",
+      "missing_files": "Check file existence before processing",
+      "encoding": "UTF-8 encoding specified"
+    },
+    "data_validation": {
+      "nan_handling": "pd.notna() checks",
+      "type_conversion": "errors='coerce' in pd.to_numeric",
+      "date_parsing": "errors='coerce' in pd.to_datetime"
+    },
+    "user_messages": {
+      "success": "✅ prefix for success messages",
+      "error": "❌ prefix for errors",
+      "warning": "⚠️ prefix for warnings",
+      "info": "📊 prefix for information"
+    }
+  },
+  "dependencies": {
+    "external_libraries": {
+      "PyPDF2": "PDF text extraction",
+      "pandas": "DataFrame operations",
+      "openpyxl": "Excel file manipulation",
+      "decimal": "Precise amount calculations",
+      "datetime": "Date handling",
+      "re": "Pattern matching",
+      "math": "Ceiling function for rounding"
+    },
+    "function_flow": [
+      "extract_all_challans() → challan_data_list",
+      "read_tds_masters() → tds_masters_data",
+      "validate_tds_totals() → validation_result",
+      "update_tds_masters_with_challans() → updated_masters",
+      "generate_output_file() → final_output"
+    ],
+    "data_flow": {
+      "input": [
+        "PDF files",
+        "TDS_Masters.xlsx",
+        "TDS_Template.xlsx"
+      ],
+      "intermediate": [
+        "challan_data_list",
+        "tds_masters_data",
+        "updated_masters_data"
+      ],
+      "output": [
+        "TDS_Masters_UPDATED.xlsx",
+        "TDS_Month_Year.xlsx"
+      ]
+    }
+  },
+  "issues": {
+    "critical": [],
+    "warnings": [],
+    "info": [
+      "No GitHub integration found (expected for new version)",
+      "✅ PDF deduplication implemented",
+      "✅ Decimal precision for amounts",
+      "✅ Multiple column detection strategies",
+      "✅ Comprehensive error handling"
+    ]
   }
 }
