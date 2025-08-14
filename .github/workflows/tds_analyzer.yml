@@ -1,0 +1,158 @@
+name: TDS Notebook Analyzer
+
+on:
+  push:
+    branches: [ main, dev ]
+    paths:
+      - '**.ipynb'
+      - 'scripts/**.py'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Manual trigger option
+
+jobs:
+  analyze-notebook:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 2  # Need previous commit for comparison
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install nbformat pandas openpyxl ast-comments jsonschema
+        pip install PyGithub  # For creating issues
+    
+    - name: Create scripts directory if not exists
+      run: mkdir -p scripts
+    
+    - name: Run notebook analyzer
+      id: analyzer
+      run: |
+        python scripts/notebook_analyzer.py \
+          --notebook "TDS_Automation_V2.ipynb" \
+          --output "TDS_DEV_INDEX.json" \
+          --verbose
+      continue-on-error: true
+    
+    - name: Validate JSON output
+      run: |
+        python -m json.tool TDS_DEV_INDEX.json > /dev/null
+        echo "✅ JSON validation passed"
+    
+    - name: Check for critical issues
+      id: check-issues
+      run: |
+        python scripts/check_critical_issues.py TDS_DEV_INDEX.json
+      continue-on-error: true
+    
+    - name: Generate bug report
+      if: steps.check-issues.outcome == 'failure'
+      run: |
+        python scripts/generate_bug_report.py \
+          --index TDS_DEV_INDEX.json \
+          --output MAPPING_BUGS.md
+    
+    - name: Commit index updates
+      if: github.event_name == 'push'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add TDS_DEV_INDEX.json
+        git add MAPPING_BUGS.md 2>/dev/null || true
+        git diff --staged --quiet || git commit -m "🤖 Auto-update: TDS index and bug tracking
+        
+        - Analyzed notebook structure
+        - Updated dependency graph
+        - Tracked PDF→Excel mappings
+        - Found $(python -c "import json; data=json.load(open('TDS_DEV_INDEX.json')); print(len(data.get('issues', {}).get('critical', [])))" 2>/dev/null || echo 0) critical issues"
+        git push
+    
+    - name: Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const indexData = JSON.parse(fs.readFileSync('TDS_DEV_INDEX.json', 'utf8'));
+          
+          const issues = indexData.issues || {};
+          const critical = issues.critical || [];
+          const warnings = issues.warnings || [];
+          const mappingIssues = issues.mapping_issues || [];
+          
+          let comment = '## 📊 TDS Notebook Analysis Report\n\n';
+          comment += `### Summary\n`;
+          comment += `- **Critical Issues:** ${critical.length}\n`;
+          comment += `- **Warnings:** ${warnings.length}\n`;
+          comment += `- **Mapping Issues:** ${mappingIssues.length}\n\n`;
+          
+          if (critical.length > 0) {
+            comment += `### 🚨 Critical Issues\n`;
+            critical.forEach(issue => {
+              comment += `- ${issue}\n`;
+            });
+            comment += '\n';
+          }
+          
+          if (mappingIssues.length > 0) {
+            comment += `### 🔄 PDF→Excel Mapping Issues\n`;
+            mappingIssues.slice(0, 5).forEach(issue => {
+              comment += `- ${issue}\n`;
+            });
+            if (mappingIssues.length > 5) {
+              comment += `- ... and ${mappingIssues.length - 5} more\n`;
+            }
+          }
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+    
+    - name: Create issue for critical bugs
+      if: steps.check-issues.outcome == 'failure' && github.event_name == 'push'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const indexData = JSON.parse(fs.readFileSync('TDS_DEV_INDEX.json', 'utf8'));
+          const critical = indexData.issues?.critical || [];
+          
+          if (critical.length > 0) {
+            const issueBody = `## 🐛 Critical Issues Found in TDS Notebook\n\n` +
+              `The automated analyzer found ${critical.length} critical issues:\n\n` +
+              critical.map((issue, i) => `${i+1}. ${issue}`).join('\n') +
+              `\n\n### Affected Areas\n` +
+              `- PDF Data Extraction\n` +
+              `- Excel Column Mappings\n` +
+              `- Data Transformations\n\n` +
+              `[View Full Report](TDS_DEV_INDEX.json)`;
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🔧 TDS Notebook: ${critical.length} critical issues detected`,
+              body: issueBody,
+              labels: ['bug', 'automated', 'tds-mapping']
+            });
+          }
+    
+    - name: Upload analysis artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: tds-analysis-results
+        path: |
+          TDS_DEV_INDEX.json
+          MAPPING_BUGS.md
+        retention-days: 30
