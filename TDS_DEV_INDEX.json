@@ -1,13 +1,13 @@
 {
   "metadata": {
-    "total_cells": 13,
+    "total_cells": 8,
     "notebook_path": "TDS_Automation_V2.ipynb",
-    "last_scan": "2025-08-14T11:50:50.725100",
+    "last_scan": "2025-08-14T17:14:18.292881",
     "version": "3.0",
     "repository": "rjshvjy/tds-automation",
     "type": "widget_based",
     "flow_type": "branching",
-    "commit_hash": "635147b3be5e9504ddd7e65b7862656678aecb3f"
+    "commit_hash": "c1ef68a891837f4403be2f31192282384f0900b9"
   },
   "cells": {
     "cell_1": {
@@ -32,8 +32,8 @@
         "classes": []
       },
       "calls": [
-        "print",
-        "filterwarnings"
+        "filterwarnings",
+        "print"
       ],
       "dependencies": {
         "backward": [],
@@ -56,31 +56,31 @@
         "classes": []
       },
       "calls": [
+        "print",
+        "extract_challan_data_from_pdf",
+        "search",
+        "extract_text",
         "group",
-        "replace",
-        "extract_all_challans",
         "len",
+        "replace",
+        "endswith",
+        "append",
+        "open",
+        "PdfReader",
+        "test_extraction",
+        "extract_all_challans",
+        "str",
+        "float",
+        "upper",
+        "get",
+        "sorted",
+        "items",
+        "zfill",
         "join",
         "strip",
-        "extract_challan_data_from_pdf",
-        "test_extraction",
-        "str",
-        "sorted",
-        "open",
-        "listdir",
-        "endswith",
-        "extract_text",
-        "print",
-        "float",
-        "append",
-        "get",
-        "upper",
         "basename",
         "lower",
-        "zfill",
-        "PdfReader",
-        "items",
-        "search"
+        "listdir"
       ],
       "dependencies": {
         "backward": [],
@@ -112,49 +112,49 @@
         "classes": []
       },
       "calls": [
-        "notna",
-        "update_tds_masters_with_challans",
+        "close",
+        "iter_rows",
+        "print",
+        "int",
         "startswith",
-        "astype",
+        "quantize",
+        "notna",
+        "search",
+        "load_workbook",
+        "enumerate",
         "group",
         "replace",
-        "strptime",
-        "load_workbook",
-        "Decimal",
-        "quantize",
-        "keys",
-        "any",
-        "abs",
         "len",
-        "iter_rows",
-        "validate_tds_totals",
+        "append",
         "print_exc",
-        "read_excel",
-        "set",
-        "strip",
-        "match",
-        "min",
-        "int",
-        "list",
+        "update_tds_masters_with_challans",
         "str",
-        "save",
+        "match",
+        "validate_tds_totals",
+        "list",
+        "Decimal",
+        "min",
+        "iterrows",
+        "range",
         "DataFrame",
+        "cell",
+        "to_numeric",
+        "astype",
+        "read_excel",
+        "strptime",
+        "get",
+        "keys",
         "sorted",
         "to_datetime",
-        "close",
-        "iterrows",
-        "apply",
-        "print",
-        "range",
-        "append",
-        "get",
-        "lower",
-        "cell",
-        "enumerate",
-        "read_tds_masters",
         "items",
-        "to_numeric",
-        "search"
+        "save",
+        "strip",
+        "lower",
+        "any",
+        "abs",
+        "apply",
+        "read_tds_masters",
+        "set"
       ],
       "dependencies": {
         "backward": [],
@@ -184,160 +184,69 @@
     },
     "cell_4": {
       "index": 4,
-      "title": "TDS_Masters Template Generator",
+      "title": "Main processing function that coordinates all steps",
       "status": "unknown",
       "imports": [
-        "import openpyxl",
-        "from openpyxl import Workbook",
-        "from openpyxl.styles import Font, Alignment, Border, Side, PatternFill",
-        "from openpyxl.utils import get_column_letter",
-        "from openpyxl.worksheet.datavalidation import DataValidation",
-        "import pandas as pd",
-        "from datetime import datetime",
-        "import ipywidgets as widgets",
-        "from IPython.display import display",
-        "from google.colab import files"
+        "import math",
+        "from decimal import Decimal, ROUND_HALF_UP"
       ],
       "defines": {
         "functions": [
-          "generate_tds_masters_template",
-          "create_template_download_widget"
+          "get_output_filename_from_masters",
+          "update_deductee_breakup",
+          "update_challan_details",
+          "process_tds_returns"
         ],
-        "classes": [
-          "TDSMastersTemplateGenerator"
-        ]
+        "classes": []
       },
       "calls": [
-        "VBox",
-        "Workbook",
-        "__init__",
-        "Layout",
-        "DataValidation",
-        "_setup_tds_parties_sheet",
-        "generate_tds_masters_template",
-        "_setup_deductor_input_sheet",
-        "_setup_tds_rates_sheet",
-        "TDSMastersTemplateGenerator",
-        "save_template",
-        "download",
-        "get_column_letter",
-        "merge_cells",
-        "save",
-        "create_sheet",
-        "create_template",
-        "print",
-        "range",
-        "_setup_challan_details_sheet",
-        "HTML",
-        "Font",
-        "create_template_download_widget",
-        "cell",
-        "enumerate",
-        "on_click",
-        "details",
-        "add",
-        "download_template",
-        "add_data_validation",
-        "items",
-        "_setup_tds_codes_sheet",
-        "Button",
-        "Alignment"
-      ],
-      "dependencies": {
-        "backward": [],
-        "forward": [
-          "cell_12"
-        ]
-      },
-      "issues": [
-        "Contains nan_values pattern",
-        "Contains leading_zeros pattern",
-        "Contains date_format pattern",
-        "Contains rate_conversion pattern"
-      ],
-      "mapping_related": false,
-      "column_references": [
-        "(415)",
-        "(416)",
-        "(417)",
-        "(418)",
-        "(419)",
-        "(420)",
-        "(425D)",
-        "(425E)",
-        "(425F)",
-        "(427)"
-      ]
-    },
-    "cell_5": {
-      "index": 5,
-      "title": "Government Template Builder and Enhanced Output Generator",
-      "status": "unknown",
-      "imports": [
-        "import openpyxl",
-        "from openpyxl import Workbook",
-        "from openpyxl.styles import Font, Alignment, Border, Side, PatternFill",
-        "from openpyxl.utils import get_column_letter",
-        "from decimal import Decimal, ROUND_HALF_UP",
-        "import pandas as pd",
-        "from datetime import datetime",
-        "import math"
-      ],
-      "defines": {
-        "functions": [
-          "generate_output_file_enhanced",
-          "test_template_generation"
-        ],
-        "classes": [
-          "GovernmentTemplateBuilder"
-        ]
-      },
-      "calls": [
-        "_setup_challan_sheet",
-        "notna",
-        "Workbook",
-        "_setup_deductee_sheet",
-        "__init__",
-        "strptime",
-        "replace",
-        "extract_all_challans",
-        "if",
-        "len",
-        "fill_template",
-        "strip",
-        "get_column_letter",
-        "_fill_deductor_details",
-        "int",
-        "str",
-        "generate_output_file_enhanced",
-        "save",
-        "iterrows",
-        "create_sheet",
-        "create_template",
-        "_fill_challan_details",
-        "isinstance",
-        "print",
-        "float",
-        "ceil",
-        "append",
-        "get",
-        "upper",
-        "_setup_deductor_sheet",
-        "Font",
-        "dropna",
-        "cell",
-        "enumerate",
-        "test_template_generation",
-        "_fill_deductee_breakup",
+        "close",
+        "strftime",
         "read_tds_masters",
-        "GovernmentTemplateBuilder",
-        "Alignment",
-        "to_datetime"
+        "iter_rows",
+        "print",
+        "int",
+        "update_deductee_breakup",
+        "to_pydatetime",
+        "isinstance",
+        "process_tds_returns",
+        "quantize",
+        "max",
+        "delete_rows",
+        "load_workbook",
+        "enumerate",
+        "replace",
+        "len",
+        "append",
+        "insert_rows",
+        "dropna",
+        "update_tds_masters_with_challans",
+        "extract_all_challans",
+        "str",
+        "validate_tds_totals",
+        "iterrows",
+        "range",
+        "cell",
+        "places",
+        "float",
+        "strptime",
+        "get",
+        "update_challan_details",
+        "to_datetime",
+        "items",
+        "join",
+        "get_output_filename_from_masters",
+        "save",
+        "lower",
+        "strip",
+        "any",
+        "now",
+        "Decimal"
       ],
       "dependencies": {
         "backward": [
-          "cell_2",
-          "cell_3"
+          "cell_3",
+          "cell_2"
         ],
         "forward": []
       },
@@ -349,6 +258,84 @@
         "Contains string_preserve pattern"
       ],
       "mapping_related": true,
+      "column_references": [
+        "(415)",
+        "(415A)",
+        "(416)",
+        "(417)",
+        "(418)",
+        "(419)",
+        "(421)",
+        "(427)"
+      ]
+    },
+    "cell_5": {
+      "index": 5,
+      "title": "Functions to generate output file - COMPLETE FIX",
+      "status": "unknown",
+      "imports": [
+        "import math  # Import math module for ceiling function",
+        "import traceback"
+      ],
+      "defines": {
+        "functions": [
+          "generate_output_file",
+          "find_totals_row",
+          "update_challan_details_proper",
+          "update_deductee_breakup_sheet_dynamic"
+        ],
+        "classes": []
+      },
+      "calls": [
+        "close",
+        "print",
+        "Font",
+        "isinstance",
+        "startswith",
+        "notna",
+        "delete_rows",
+        "load_workbook",
+        "isalpha",
+        "enumerate",
+        "update_deductee_breakup_sheet_dynamic",
+        "len",
+        "replace",
+        "generate_output_file",
+        "print_exc",
+        "insert_rows",
+        "isdigit",
+        "str",
+        "iterrows",
+        "range",
+        "find_totals_row",
+        "cell",
+        "astype",
+        "float",
+        "totals",
+        "strptime",
+        "upper",
+        "get",
+        "zfill",
+        "save",
+        "update_challan_details_proper",
+        "lower",
+        "strip",
+        "min",
+        "ceil"
+      ],
+      "dependencies": {
+        "backward": [],
+        "forward": []
+      },
+      "issues": [
+        "Contains nan_values pattern",
+        "Contains leading_zeros pattern",
+        "Contains date_format pattern",
+        "Contains rate_conversion pattern",
+        "Contains round_up pattern",
+        "Contains string_preserve pattern"
+      ],
+      "mapping_related": false,
       "column_references": [
         "(415)",
         "(415A)",
@@ -366,415 +353,6 @@
     },
     "cell_6": {
       "index": 6,
-      "title": "Enhanced Main Processing Pipeline",
-      "status": "unknown",
-      "imports": [
-        "import os",
-        "import math",
-        "import pandas as pd",
-        "import numpy as np",
-        "from datetime import datetime",
-        "from decimal import Decimal, ROUND_HALF_UP",
-        "import openpyxl",
-        "from openpyxl import load_workbook, Workbook",
-        "from openpyxl.utils import get_column_letter",
-        "from openpyxl.styles import Font, Alignment, Border, Side, PatternFill",
-        "from GovernmentTemplateBuilder import GovernmentTemplateBuilder",
-        "from GovernmentTemplateBuilder import GovernmentTemplateBuilder"
-      ],
-      "defines": {
-        "functions": [
-          "get_output_filename_from_masters",
-          "fill_government_template",
-          "process_tds_returns_enhanced",
-          "process_tds_returns"
-        ],
-        "classes": []
-      },
-      "calls": [
-        "ReconciliationReport",
-        "Workbook",
-        "update_tds_masters_with_challans",
-        "extract_all_challans",
-        "ImportError",
-        "strftime",
-        "remove",
-        "validate_all",
-        "fill_government_template",
-        "dirname",
-        "process_tds_returns",
-        "len",
-        "join",
-        "validate_tds_totals",
-        "fill_template",
-        "generate_report",
-        "get_output_filename_from_masters",
-        "now",
-        "save",
-        "create_sheet",
-        "ValidationEngine",
-        "create_template",
-        "print",
-        "get",
-        "object",
-        "dropna",
-        "read_tds_masters",
-        "GovernmentTemplateBuilder",
-        "process_tds_returns_enhanced",
-        "to_datetime"
-      ],
-      "dependencies": {
-        "backward": [
-          "cell_2",
-          "cell_5",
-          "cell_3"
-        ],
-        "forward": [
-          "cell_7",
-          "cell_9",
-          "cell_8"
-        ]
-      },
-      "issues": [
-        "Contains date_format pattern",
-        "Contains rate_conversion pattern",
-        "Contains round_up pattern",
-        "Contains string_preserve pattern"
-      ],
-      "mapping_related": true,
-      "column_references": [
-        "(418)"
-      ]
-    },
-    "cell_7": {
-      "index": 7,
-      "title": "Validation Engine with Reconciliation Report Support",
-      "status": "unknown",
-      "imports": [
-        "import re",
-        "import pandas as pd",
-        "import openpyxl",
-        "from openpyxl import load_workbook",
-        "from datetime import datetime",
-        "from decimal import Decimal, ROUND_HALF_UP",
-        "import numpy as np"
-      ],
-      "defines": {
-        "functions": [
-          "test_validation"
-        ],
-        "classes": [
-          "ValidationEngine"
-        ]
-      },
-      "calls": [
-        "notna",
-        "ExcelWriter",
-        "to_excel",
-        "__init__",
-        "to_string",
-        "replace",
-        "strftime",
-        "_validate_quarter",
-        "load_workbook",
-        "validate_all",
-        "Decimal",
-        "quantize",
-        "_generate_suggestions",
-        "keys",
-        "abs",
-        "_reconcile_amounts",
-        "len",
-        "set",
-        "_validate_tan",
-        "_validate_email",
-        "_validate_deductor_type",
-        "strip",
-        "match",
-        "_generate_summary",
-        "list",
-        "_validate_mandatory_fields",
-        "now",
-        "str",
-        "sum",
-        "DataFrame",
-        "iterrows",
-        "sorted",
-        "ValidationEngine",
-        "_validate_pan",
-        "print",
-        "float",
-        "append",
-        "validator",
-        "get",
-        "upper",
-        "_validate_formats",
-        "get_validation_dataframe",
-        "_validate_pincode",
-        "_validate_yes_no",
-        "values",
-        "enumerate",
-        "title",
-        "export_validation_report",
-        "test_validation",
-        "items",
-        "_load_deductor_details"
-      ],
-      "dependencies": {
-        "backward": [],
-        "forward": []
-      },
-      "issues": [
-        "Contains nan_values pattern",
-        "Contains date_format pattern",
-        "Contains rate_conversion pattern",
-        "Contains round_up pattern",
-        "Contains string_preserve pattern"
-      ],
-      "mapping_related": true,
-      "column_references": [
-        "(415A)",
-        "(416)",
-        "(417)",
-        "(421)"
-      ]
-    },
-    "cell_8": {
-      "index": 8,
-      "title": "Reconciliation Report Generator",
-      "status": "unknown",
-      "imports": [
-        "import pandas as pd",
-        "import openpyxl",
-        "from openpyxl import Workbook",
-        "from openpyxl.styles import Font, Alignment, Border, Side, PatternFill",
-        "from openpyxl.utils import get_column_letter",
-        "from openpyxl.formatting.rule import CellIsRule",
-        "from openpyxl.styles.differential import DifferentialStyle",
-        "from datetime import datetime",
-        "import numpy as np"
-      ],
-      "defines": {
-        "functions": [
-          "test_reconciliation_report"
-        ],
-        "classes": [
-          "ReconciliationReport"
-        ]
-      },
-      "calls": [
-        "ReconciliationReport",
-        "Workbook",
-        "_create_validation_errors_sheet",
-        "_create_mandatory_fields_sheet",
-        "else",
-        "Border",
-        "_create_data_corrections_sheet",
-        "_create_summary_sheet",
-        "__init__",
-        "PatternFill",
-        "strftime",
-        "_print_report_summary",
-        "remove",
-        "_get_format_suggestion",
-        "abs",
-        "len",
-        "Side",
-        "generate_report",
-        "merge_cells",
-        "_create_challan_matching_sheet",
-        "now",
-        "sum",
-        "save",
-        "create_sheet",
-        "print",
-        "range",
-        "append",
-        "get",
-        "Font",
-        "test_reconciliation_report",
-        "cell",
-        "enumerate",
-        "values",
-        "title",
-        "items",
-        "Alignment"
-      ],
-      "dependencies": {
-        "backward": [],
-        "forward": []
-      },
-      "issues": [
-        "Contains date_format pattern",
-        "Contains rate_conversion pattern"
-      ],
-      "mapping_related": true,
-      "column_references": [
-        "(416)",
-        "(417)"
-      ]
-    },
-    "cell_9": {
-      "index": 9,
-      "title": "Enhanced Main Processing Pipeline",
-      "status": "unknown",
-      "imports": [
-        "import os",
-        "import math",
-        "import pandas as pd",
-        "import numpy as np",
-        "from datetime import datetime",
-        "from decimal import Decimal, ROUND_HALF_UP",
-        "import openpyxl",
-        "from openpyxl import load_workbook, Workbook",
-        "from openpyxl.utils import get_column_letter",
-        "from openpyxl.styles import Font, Alignment, Border, Side, PatternFill",
-        "from GovernmentTemplateBuilder import GovernmentTemplateBuilder",
-        "from GovernmentTemplateBuilder import GovernmentTemplateBuilder"
-      ],
-      "defines": {
-        "functions": [
-          "get_output_filename_from_masters",
-          "fill_government_template",
-          "process_tds_returns_enhanced",
-          "process_tds_returns"
-        ],
-        "classes": []
-      },
-      "calls": [
-        "ReconciliationReport",
-        "Workbook",
-        "update_tds_masters_with_challans",
-        "extract_all_challans",
-        "ImportError",
-        "strftime",
-        "remove",
-        "validate_all",
-        "fill_government_template",
-        "dirname",
-        "process_tds_returns",
-        "len",
-        "join",
-        "validate_tds_totals",
-        "fill_template",
-        "generate_report",
-        "get_output_filename_from_masters",
-        "now",
-        "save",
-        "create_sheet",
-        "ValidationEngine",
-        "create_template",
-        "print",
-        "get",
-        "object",
-        "dropna",
-        "read_tds_masters",
-        "GovernmentTemplateBuilder",
-        "process_tds_returns_enhanced",
-        "to_datetime"
-      ],
-      "dependencies": {
-        "backward": [
-          "cell_2",
-          "cell_5",
-          "cell_7",
-          "cell_3",
-          "cell_8"
-        ],
-        "forward": []
-      },
-      "issues": [
-        "Contains date_format pattern",
-        "Contains rate_conversion pattern",
-        "Contains round_up pattern",
-        "Contains string_preserve pattern"
-      ],
-      "mapping_related": true,
-      "column_references": [
-        "(418)"
-      ]
-    },
-    "cell_10": {
-      "index": 10,
-      "title": "Modified Interactive Interface - 2-File Upload System",
-      "status": "unknown",
-      "imports": [
-        "import os",
-        "import zipfile",
-        "import shutil",
-        "from google.colab import files",
-        "import pandas as pd",
-        "from datetime import datetime",
-        "import time",
-        "import traceback"
-      ],
-      "defines": {
-        "functions": [
-          "clear_uploads",
-          "upload_zip_file",
-          "process_uploaded_files",
-          "start_interactive_upload",
-          "download_tds_masters_template"
-        ],
-        "classes": []
-      },
-      "calls": [
-        "startswith",
-        "move",
-        "upload",
-        "remove",
-        "start_interactive_upload",
-        "write",
-        "len",
-        "format",
-        "TDSMastersTemplateGenerator",
-        "join",
-        "makedirs",
-        "download_tds_masters_template",
-        "print_exc",
-        "download",
-        "clear_uploads",
-        "upload_zip_file",
-        "extract_challan_data_from_pdf",
-        "save",
-        "open",
-        "create_template",
-        "endswith",
-        "ZipFile",
-        "walk",
-        "print",
-        "append",
-        "get",
-        "basename",
-        "lower",
-        "process_uploaded_files",
-        "rmtree",
-        "items",
-        "process_tds_returns_enhanced",
-        "extractall",
-        "exists"
-      ],
-      "dependencies": {
-        "backward": [
-          "cell_2",
-          "cell_4",
-          "cell_9"
-        ],
-        "forward": []
-      },
-      "issues": [
-        "Contains leading_zeros pattern",
-        "Contains rate_conversion pattern",
-        "Contains round_up pattern",
-        "Contains string_preserve pattern"
-      ],
-      "mapping_related": true,
-      "column_references": [
-        "(427)"
-      ]
-    },
-    "cell_11": {
-      "index": 11,
       "title": "Testing individual components and troubleshooting - FIXED VERSION",
       "status": "unknown",
       "imports": [
@@ -791,44 +369,44 @@
         "classes": []
       },
       "calls": [
-        "Counter",
-        "notna",
-        "replace",
-        "extract_all_challans",
-        "test_date_extraction",
-        "abs",
-        "join",
-        "strip",
-        "get_output_filename_from_masters",
-        "create_test_summary",
-        "extract_challan_data_from_pdf",
-        "str",
-        "sorted",
-        "iterrows",
-        "listdir",
-        "endswith",
-        "head",
         "print",
-        "most_common",
-        "append",
-        "float",
-        "ceil",
-        "get",
-        "lower",
-        "dropna",
-        "enumerate",
-        "test_pdf_extraction_single",
+        "notna",
+        "extract_challan_data_from_pdf",
         "test_tds_masters_reading",
-        "test_pdf_deduplication",
-        "read_tds_masters",
+        "enumerate",
+        "endswith",
+        "replace",
+        "Counter",
+        "append",
+        "dropna",
+        "test_date_extraction",
+        "extract_all_challans",
+        "str",
+        "iterrows",
+        "most_common",
+        "float",
+        "get",
+        "sorted",
+        "to_datetime",
         "items",
-        "to_datetime"
+        "test_pdf_extraction_single",
+        "create_test_summary",
+        "join",
+        "get_output_filename_from_masters",
+        "lower",
+        "strip",
+        "abs",
+        "test_pdf_deduplication",
+        "listdir",
+        "head",
+        "read_tds_masters",
+        "ceil"
       ],
       "dependencies": {
         "backward": [
-          "cell_2",
+          "cell_4",
           "cell_3",
-          "cell_9"
+          "cell_2"
         ],
         "forward": []
       },
@@ -852,64 +430,73 @@
         "(427)"
       ]
     },
-    "cell_12": {
-      "index": 12,
-      "title": "Simple Interactive Interface with Template Choice",
+    "cell_7": {
+      "index": 7,
+      "title": "Interactive file upload and processing",
       "status": "unknown",
       "imports": [
         "import os",
-        "import ipywidgets as widgets",
-        "from IPython.display import display, clear_output, HTML",
+        "import zipfile",
+        "import shutil",
         "from google.colab import files",
-        "import time"
+        "import pandas as pd",
+        "from datetime import datetime"
       ],
       "defines": {
         "functions": [
-          "show_template_choice",
-          "download_template",
-          "quick_upload"
+          "clear_uploads",
+          "upload_zip_file",
+          "process_uploaded_files",
+          "start_interactive_upload"
         ],
         "classes": []
       },
       "calls": [
-        "quick_upload",
-        "Layout",
-        "Output",
-        "upload",
-        "generate_tds_masters_template",
-        "write",
-        "join",
         "makedirs",
-        "show_template_choice",
-        "display",
-        "download",
-        "upload_files",
-        "globals",
-        "open",
-        "endswith",
         "print",
-        "clear_output",
+        "process_tds_returns",
+        "startswith",
+        "extract_challan_data_from_pdf",
+        "endswith",
+        "remove",
+        "open",
+        "ZipFile",
         "append",
-        "HTML",
-        "on_click",
-        "HBox",
-        "download_template",
+        "start_interactive_upload",
+        "download",
+        "extractall",
+        "upload_zip_file",
+        "exists",
+        "upload",
+        "write",
+        "rmtree",
+        "move",
+        "process_uploaded_files",
+        "get",
+        "clear_uploads",
         "items",
-        "process_tds_returns_enhanced",
-        "Button"
+        "walk",
+        "join",
+        "lower"
       ],
       "dependencies": {
         "backward": [
           "cell_4",
-          "cell_9"
+          "cell_2"
         ],
         "forward": []
       },
       "issues": [
+        "Contains nan_values pattern",
         "Contains leading_zeros pattern",
+        "Contains rate_conversion pattern",
+        "Contains round_up pattern",
         "Contains string_preserve pattern"
       ],
-      "mapping_related": true
+      "mapping_related": true,
+      "column_references": [
+        "(427)"
+      ]
     }
   },
   "dependency_graph": {
@@ -920,12 +507,7 @@
       4,
       5,
       6,
-      7,
-      8,
-      9,
-      10,
-      11,
-      12
+      7
     ],
     "definitions": {
       "extract_challan_data_from_pdf": "cell_2",
@@ -934,35 +516,25 @@
       "read_tds_masters": "cell_3",
       "update_tds_masters_with_challans": "cell_3",
       "validate_tds_totals": "cell_3",
-      "generate_tds_masters_template": "cell_4",
-      "create_template_download_widget": "cell_4",
-      "TDSMastersTemplateGenerator": "cell_4",
-      "generate_output_file_enhanced": "cell_5",
-      "test_template_generation": "cell_5",
-      "GovernmentTemplateBuilder": "cell_5",
-      "get_output_filename_from_masters": "cell_9",
-      "fill_government_template": "cell_9",
-      "process_tds_returns_enhanced": "cell_9",
-      "process_tds_returns": "cell_9",
-      "test_validation": "cell_7",
-      "ValidationEngine": "cell_7",
-      "test_reconciliation_report": "cell_8",
-      "ReconciliationReport": "cell_8",
-      "clear_uploads": "cell_10",
-      "upload_zip_file": "cell_10",
-      "process_uploaded_files": "cell_10",
-      "start_interactive_upload": "cell_10",
-      "download_tds_masters_template": "cell_10",
-      "test_pdf_extraction_single": "cell_11",
-      "test_pdf_deduplication": "cell_11",
-      "test_tds_masters_reading": "cell_11",
-      "test_date_extraction": "cell_11",
-      "create_test_summary": "cell_11",
-      "show_template_choice": "cell_12",
-      "download_template": "cell_12",
-      "quick_upload": "cell_12"
+      "get_output_filename_from_masters": "cell_4",
+      "update_deductee_breakup": "cell_4",
+      "update_challan_details": "cell_4",
+      "process_tds_returns": "cell_4",
+      "generate_output_file": "cell_5",
+      "find_totals_row": "cell_5",
+      "update_challan_details_proper": "cell_5",
+      "update_deductee_breakup_sheet_dynamic": "cell_5",
+      "test_pdf_extraction_single": "cell_6",
+      "test_pdf_deduplication": "cell_6",
+      "test_tds_masters_reading": "cell_6",
+      "test_date_extraction": "cell_6",
+      "create_test_summary": "cell_6",
+      "clear_uploads": "cell_7",
+      "upload_zip_file": "cell_7",
+      "process_uploaded_files": "cell_7",
+      "start_interactive_upload": "cell_7"
     },
-    "forward_dependencies": 2
+    "forward_dependencies": 0
   },
   "mapping_pipeline": {
     "pdf_extraction": {
@@ -976,23 +548,22 @@
           ]
         },
         {
-          "cell": "cell_10",
-          "functions": [
-            "clear_uploads",
-            "upload_zip_file",
-            "process_uploaded_files",
-            "start_interactive_upload",
-            "download_tds_masters_template"
-          ]
-        },
-        {
-          "cell": "cell_11",
+          "cell": "cell_6",
           "functions": [
             "test_pdf_extraction_single",
             "test_pdf_deduplication",
             "test_tds_masters_reading",
             "test_date_extraction",
             "create_test_summary"
+          ]
+        },
+        {
+          "cell": "cell_7",
+          "functions": [
+            "clear_uploads",
+            "upload_zip_file",
+            "process_uploaded_files",
+            "start_interactive_upload"
           ]
         }
       ],
@@ -1029,59 +600,23 @@
         {
           "cell": "cell_4",
           "functions": [
-            "generate_tds_masters_template",
-            "create_template_download_widget"
+            "get_output_filename_from_masters",
+            "update_deductee_breakup",
+            "update_challan_details",
+            "process_tds_returns"
           ]
         },
         {
           "cell": "cell_5",
           "functions": [
-            "generate_output_file_enhanced",
-            "test_template_generation"
+            "generate_output_file",
+            "find_totals_row",
+            "update_challan_details_proper",
+            "update_deductee_breakup_sheet_dynamic"
           ]
         },
         {
           "cell": "cell_6",
-          "functions": [
-            "get_output_filename_from_masters",
-            "fill_government_template",
-            "process_tds_returns_enhanced",
-            "process_tds_returns"
-          ]
-        },
-        {
-          "cell": "cell_7",
-          "functions": [
-            "test_validation"
-          ]
-        },
-        {
-          "cell": "cell_8",
-          "functions": [
-            "test_reconciliation_report"
-          ]
-        },
-        {
-          "cell": "cell_9",
-          "functions": [
-            "get_output_filename_from_masters",
-            "fill_government_template",
-            "process_tds_returns_enhanced",
-            "process_tds_returns"
-          ]
-        },
-        {
-          "cell": "cell_10",
-          "functions": [
-            "clear_uploads",
-            "upload_zip_file",
-            "process_uploaded_files",
-            "start_interactive_upload",
-            "download_tds_masters_template"
-          ]
-        },
-        {
-          "cell": "cell_11",
           "functions": [
             "test_pdf_extraction_single",
             "test_pdf_deduplication",
@@ -1091,11 +626,12 @@
           ]
         },
         {
-          "cell": "cell_12",
+          "cell": "cell_7",
           "functions": [
-            "show_template_choice",
-            "download_template",
-            "quick_upload"
+            "clear_uploads",
+            "upload_zip_file",
+            "process_uploaded_files",
+            "start_interactive_upload"
           ]
         }
       ],
@@ -1116,15 +652,8 @@
       "transformations": [
         "Amount rounding up",
         "Date formatting",
-        "Date formatting",
         "Amount rounding up",
         "Date formatting",
-        "Amount rounding up",
-        "Date formatting",
-        "Amount rounding up",
-        "Date formatting",
-        "Date formatting",
-        "Amount rounding up",
         "Date formatting",
         "Date formatting"
       ],
@@ -1142,33 +671,21 @@
           ]
         },
         {
-          "cell": "cell_6",
+          "cell": "cell_4",
           "functions": [
             "get_output_filename_from_masters",
-            "fill_government_template",
-            "process_tds_returns_enhanced",
+            "update_deductee_breakup",
+            "update_challan_details",
             "process_tds_returns"
           ]
         },
         {
-          "cell": "cell_7",
+          "cell": "cell_5",
           "functions": [
-            "test_validation"
-          ]
-        },
-        {
-          "cell": "cell_8",
-          "functions": [
-            "test_reconciliation_report"
-          ]
-        },
-        {
-          "cell": "cell_9",
-          "functions": [
-            "get_output_filename_from_masters",
-            "fill_government_template",
-            "process_tds_returns_enhanced",
-            "process_tds_returns"
+            "generate_output_file",
+            "find_totals_row",
+            "update_challan_details_proper",
+            "update_deductee_breakup_sheet_dynamic"
           ]
         }
       ],
@@ -1178,120 +695,80 @@
   "issues": {
     "critical": [],
     "warnings": [
-      "Cell 4: Forward dependency on download_template defined in Cell 12",
-      "Cell 6: Forward dependency on ReconciliationReport defined in Cell 8",
-      "Cell 6: Forward dependency on fill_government_template defined in Cell 9",
-      "Cell 6: Forward dependency on process_tds_returns defined in Cell 9",
-      "Cell 6: Forward dependency on get_output_filename_from_masters defined in Cell 9",
-      "Cell 6: Forward dependency on ValidationEngine defined in Cell 7",
-      "Cell 6: Forward dependency on process_tds_returns_enhanced defined in Cell 9",
-      "Undefined function called: VBox",
-      "Undefined function called: Counter",
-      "Undefined function called: Workbook",
-      "Undefined function called: Border",
-      "Undefined function called: startswith",
-      "Undefined function called: replace",
-      "Undefined function called: strptime",
-      "Undefined function called: join",
-      "Undefined function called: set",
-      "Undefined function called: merge_cells",
-      "Undefined function called: now",
-      "Undefined function called: sum",
-      "Undefined function called: save",
-      "Undefined function called: listdir",
-      "Undefined function called: endswith",
-      "Undefined function called: head",
-      "Undefined function called: ZipFile",
-      "Undefined function called: walk",
-      "Undefined function called: most_common",
-      "Undefined function called: HTML",
-      "Undefined function called: object",
-      "Undefined function called: dropna",
-      "Undefined function called: on_click",
-      "Undefined function called: export_validation_report",
-      "Undefined function called: filterwarnings",
-      "Undefined function called: to_numeric",
-      "Undefined function called: HBox",
-      "Undefined function called: Alignment",
-      "Undefined function called: extractall",
-      "Undefined function called: notna",
-      "Undefined function called: to_excel",
-      "Undefined function called: move",
-      "Undefined function called: group",
-      "Undefined function called: ImportError",
-      "Undefined function called: validate_all",
-      "Undefined function called: any",
-      "Undefined function called: save_template",
-      "Undefined function called: read_excel",
-      "Undefined function called: strip",
-      "Undefined function called: list",
-      "Undefined function called: upload_files",
-      "Undefined function called: DataFrame",
-      "Undefined function called: iterrows",
-      "Undefined function called: create_template",
-      "Undefined function called: extract_text",
-      "Undefined function called: ceil",
-      "Undefined function called: validator",
-      "Undefined function called: upper",
-      "Undefined function called: basename",
-      "Undefined function called: items",
-      "Undefined function called: Button",
-      "Undefined function called: exists",
-      "Undefined function called: search",
-      "Undefined function called: Layout",
-      "Undefined function called: DataValidation",
-      "Undefined function called: PatternFill",
-      "Undefined function called: remove",
-      "Undefined function called: load_workbook",
-      "Undefined function called: Decimal",
-      "Undefined function called: dirname",
-      "Undefined function called: write",
+      "Function not found in expected location: GovernmentTemplateBuilder (Template generation)",
+      "Function not found in expected location: ValidationEngine (Field validation)",
+      "Function not found in expected location: ReconciliationReport (Report generation)",
       "Undefined function called: makedirs",
-      "Undefined function called: Side",
-      "Undefined function called: download",
-      "Undefined function called: close",
-      "Undefined function called: create_sheet",
-      "Undefined function called: clear_output",
-      "Undefined function called: append",
-      "Undefined function called: Font",
-      "Undefined function called: lower",
-      "Undefined function called: get_validation_dataframe",
-      "Undefined function called: details",
-      "Undefined function called: add",
-      "Undefined function called: to_datetime",
-      "Undefined function called: ExcelWriter",
-      "Undefined function called: else",
-      "Undefined function called: astype",
-      "Undefined function called: to_string",
-      "Undefined function called: Output",
-      "Undefined function called: upload",
-      "Undefined function called: strftime",
-      "Undefined function called: keys",
-      "Undefined function called: quantize",
-      "Undefined function called: if",
-      "Undefined function called: abs",
-      "Undefined function called: format",
       "Undefined function called: iter_rows",
-      "Undefined function called: print_exc",
-      "Undefined function called: display",
-      "Undefined function called: fill_template",
-      "Undefined function called: match",
-      "Undefined function called: get_column_letter",
-      "Undefined function called: min",
-      "Undefined function called: generate_report",
-      "Undefined function called: globals",
-      "Undefined function called: sorted",
-      "Undefined function called: apply",
-      "Undefined function called: get",
-      "Undefined function called: cell",
-      "Undefined function called: zfill",
+      "Undefined function called: quantize",
+      "Undefined function called: max",
+      "Undefined function called: delete_rows",
+      "Undefined function called: isalpha",
+      "Undefined function called: extract_text",
+      "Undefined function called: group",
+      "Undefined function called: endswith",
       "Undefined function called: enumerate",
-      "Undefined function called: values",
-      "Undefined function called: rmtree",
-      "Undefined function called: title",
+      "Undefined function called: append",
+      "Undefined function called: insert_rows",
+      "Undefined function called: print_exc",
+      "Undefined function called: download",
+      "Undefined function called: isdigit",
       "Undefined function called: PdfReader",
-      "Undefined function called: add_data_validation",
-      "Multiple widget cells found (2), may cause state conflicts"
+      "Undefined function called: filterwarnings",
+      "Undefined function called: list",
+      "Undefined function called: match",
+      "Undefined function called: min",
+      "Undefined function called: most_common",
+      "Undefined function called: DataFrame",
+      "Undefined function called: write",
+      "Undefined function called: cell",
+      "Undefined function called: to_numeric",
+      "Undefined function called: astype",
+      "Undefined function called: read_excel",
+      "Undefined function called: totals",
+      "Undefined function called: upper",
+      "Undefined function called: keys",
+      "Undefined function called: zfill",
+      "Undefined function called: walk",
+      "Undefined function called: save",
+      "Undefined function called: lower",
+      "Undefined function called: strip",
+      "Undefined function called: any",
+      "Undefined function called: basename",
+      "Undefined function called: listdir",
+      "Undefined function called: strftime",
+      "Undefined function called: now",
+      "Undefined function called: set",
+      "Undefined function called: close",
+      "Undefined function called: Font",
+      "Undefined function called: to_pydatetime",
+      "Undefined function called: notna",
+      "Undefined function called: startswith",
+      "Undefined function called: search",
+      "Undefined function called: load_workbook",
+      "Undefined function called: replace",
+      "Undefined function called: Counter",
+      "Undefined function called: remove",
+      "Undefined function called: dropna",
+      "Undefined function called: ZipFile",
+      "Undefined function called: extractall",
+      "Undefined function called: head",
+      "Undefined function called: iterrows",
+      "Undefined function called: exists",
+      "Undefined function called: upload",
+      "Undefined function called: places",
+      "Undefined function called: rmtree",
+      "Undefined function called: strptime",
+      "Undefined function called: move",
+      "Undefined function called: get",
+      "Undefined function called: sorted",
+      "Undefined function called: to_datetime",
+      "Undefined function called: items",
+      "Undefined function called: join",
+      "Undefined function called: abs",
+      "Undefined function called: apply",
+      "Undefined function called: Decimal",
+      "Undefined function called: ceil"
     ],
     "mapping_issues": [],
     "fixed": []
@@ -1300,17 +777,14 @@
   "test_coverage": {
     "test_functions": [
       "test_extraction",
-      "test_template_generation",
-      "test_validation",
-      "test_reconciliation_report",
       "test_pdf_extraction_single",
       "test_pdf_deduplication",
       "test_tds_masters_reading",
       "test_date_extraction"
     ],
-    "coverage_count": 8,
+    "coverage_count": 5,
     "has_pdf_tests": true,
     "has_excel_tests": true,
-    "has_validation_tests": true
+    "has_validation_tests": false
   }
 }
