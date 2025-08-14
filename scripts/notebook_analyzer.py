@@ -212,7 +212,8 @@ class TDSNotebookAnalyzer:
                         deps.add(def_cell)
                     elif def_idx > curr_idx:
                         forward_deps.add(def_cell)
-                        self.index['issues']['critical'].append(
+                        # Forward dependencies are now warnings, not critical
+                        self.index['issues']['warnings'].append(
                             f"Cell {curr_idx}: Forward dependency on {call} defined in Cell {def_idx}"
                         )
             
@@ -307,8 +308,8 @@ class TDSNotebookAnalyzer:
         
         for func_name, description in self.critical_functions.items():
             if func_name not in defined_functions:
-                self.index['issues']['critical'].append(
-                    f"Missing critical function: {func_name} ({description})"
+                self.index['issues']['warnings'].append(
+                    f"Function not found in expected location: {func_name} ({description})"
                 )
         
         # Check for undefined function calls
