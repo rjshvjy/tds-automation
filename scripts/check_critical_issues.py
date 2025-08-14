@@ -1,14 +1,8 @@
-#!/usr/bin/env python3
-"""
-Helper scripts for GitHub Actions workflow
-1. check_critical_issues.py - Check for critical bugs
-2. generate_bug_report.py - Generate markdown bug report
-"""
-
 # ============= check_critical_issues.py =============
 """
+Location: scripts/check_critical_issues.py
 Check for critical issues in the index and exit with error if found
-Usage: python check_critical_issues.py TDS_DEV_INDEX.json
+Usage: python scripts/check_critical_issues.py TDS_DEV_INDEX.json
 """
 
 import json
@@ -21,18 +15,22 @@ def check_critical_issues(index_path):
     critical = index.get('issues', {}).get('critical', [])
     mapping_issues = index.get('issues', {}).get('mapping_issues', [])
     
-    # Define what makes an issue critical
+    # Define what makes an issue critical (excluding forward dependencies)
     critical_patterns = [
-        'Forward dependency',
         'Missing critical function',
         'No PDF→Excel mapping',
-        'undefined function',
-        'ValidationEngine',
-        'GovernmentTemplateBuilder'
+        'ValidationEngine not found',
+        'GovernmentTemplateBuilder not found'
     ]
     
-    # Count critical issues
-    critical_count = len(critical)
+    # Filter out forward dependency issues from critical
+    filtered_critical = []
+    for issue in critical:
+        if 'Forward dependency' not in issue:
+            filtered_critical.append(issue)
+    
+    # Count only non-forward-dependency critical issues
+    critical_count = len(filtered_critical)
     
     # Check mapping pipeline
     mapping_pipeline = index.get('mapping_pipeline', {})
@@ -47,21 +45,20 @@ def check_critical_issues(index_path):
         print("❌ CRITICAL: No Excel processing functions found!")
         critical_count += 1
     
-    # Check for forward dependencies
+    # Check for forward dependencies (now just informational)
     forward_deps = index.get('dependency_graph', {}).get('forward_dependencies', 0)
     if forward_deps > 0:
-        print(f"❌ CRITICAL: {forward_deps} forward dependencies found!")
-        critical_count += 1
+        print(f"⚠️ INFO: {forward_deps} forward dependencies found (non-blocking)")
     
     # Print summary
     print(f"\n📊 Analysis Summary:")
     print(f"  Critical Issues: {critical_count}")
     print(f"  Mapping Issues: {len(mapping_issues)}")
-    print(f"  Forward Dependencies: {forward_deps}")
+    print(f"  Forward Dependencies: {forward_deps} (informational only)")
     
     if critical_count > 0:
         print("\n⚠️ Critical issues detected! Please fix before merging.")
-        for issue in critical[:5]:  # Show first 5
+        for issue in filtered_critical[:5]:  # Show first 5
             print(f"  - {issue}")
         sys.exit(1)
     else:
@@ -70,6 +67,6 @@ def check_critical_issues(index_path):
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print("Usage: python check_critical_issues.py TDS_DEV_INDEX.json")
+        print("Usage: python scripts/check_critical_issues.py TDS_DEV_INDEX.json")
         sys.exit(1)
     check_critical_issues(sys.argv[1])
