@@ -1735,4 +1735,4 @@ if go:
                 use_container_width=True
             )
 
-st.caption('Tip: Keep file names and sheet names as in your existing workflow.')
+st.caption('Note: Your data is not saved on any server.')
