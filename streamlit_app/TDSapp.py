@@ -1654,13 +1654,13 @@ with st.sidebar:
         """
         **Required files from Google Drive:**
         
-        📄 [**Help File (PDF)**](https://drive.google.com/uc?export=download&id=1ns1cfmFlLJbkxfYD3ScKCbxYZbQj4gNG)  
+        📄 [**Help File (PDF)**](https://drive.google.com/uc?export=download&id=1QqBZYeLFkomoFk6jewe7tS73bjVfSnuv)  
         *Instructions and guidelines*
         
         📊 [**TDS_Masters Template**](https://docs.google.com/spreadsheets/d/1WogLXgbftVWblZTnYhwhKjxPcHjnY77G/export?format=xlsx)  
         *Fill this file and upload*
         
-        📋 [**TDS_Template**](https://docs.google.com/spreadsheets/d/1LQ_3tR72c1xGry64_lQeaC4EiUeqSZ2x/export?format=xlsx)  
+        📋 [**TDS_Template**](https://docs.google.com/spreadsheets/d/1ylrnwgF2x_ID0t72jsxdChMMvEEsg_xt/export?format=xlsx)  
         *Fill DEDUCTOR DETAILS and upload*
         """
     )
