@@ -1717,28 +1717,37 @@ if go:
         
         st.success('✅ Processing Complete! Download your files below:')
         
+        # Read both files into memory first
+        masters_data = None
+        output_data = None
+        
+        if updated_masters_path and os.path.exists(updated_masters_path):
+            with open(updated_masters_path, 'rb') as f:
+                masters_data = f.read()
+        
+        with open(output_path, 'rb') as f:
+            output_data = f.read()
+        
         # Create two columns for download buttons
         col1, col2 = st.columns(2)
         
         # Download button for Updated Masters
-        if updated_masters_path and os.path.exists(updated_masters_path):
+        if masters_data:
             with col1:
-                with open(updated_masters_path, 'rb') as f:
-                    st.download_button(
-                        '📊 Download Updated Masters', 
-                        f, 
-                        file_name=os.path.basename(updated_masters_path),
-                        key='masters_download'
-                    )
+                st.download_button(
+                    '📊 Download Updated Masters', 
+                    masters_data, 
+                    file_name=os.path.basename(updated_masters_path),
+                    key='masters_download'
+                )
         
         # Download button for Output file
         with col2:
-            with open(output_path, 'rb') as f:
-                st.download_button(
-                    '📋 Download TDS Return File', 
-                    f, 
-                    file_name=os.path.basename(output_path),
-                    key='output_download'
-                )
+            st.download_button(
+                '📋 Download TDS Return File', 
+                output_data, 
+                file_name=os.path.basename(output_path),
+                key='output_download'
+            )
 
 st.caption('Tip: Keep file names and sheet names as in your existing workflow.')
