@@ -1,11 +1,11 @@
 # 📋 TDS Implementation Report
 
-*Generated: 2025-08-15 05:47:35*
+*Generated: 2025-08-15 07:28:08*
 *Analyzer Version: 2.0*
 
 ## 🔧 Function Documentation
 
-**Total Functions:** 23
+**Total Functions:** 26
 
 ### `extract_challan_data_from_pdf(pdf_path)`
 > Extract challan data from a single PDF file
@@ -58,7 +58,7 @@
 
 ### `update_deductee_breakup(ws, tds_masters_data, challan_data_list)`
 > Helper function to update DEDUCTEE BREAK-UP sheet
-    FIXED: Rate formatting to show 2 decimal places (e.g., 0.10%), preserve totals row, delete overflow rows after totals
+    FIXED: Properly detect totals row by checking for formulas or standard template position
 - **Category:** Deductee sheet update
 - **Cell:** 4
 
