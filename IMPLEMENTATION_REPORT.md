@@ -1,6 +1,6 @@
 # 📋 TDS Implementation Report
 
-*Generated: 2025-08-15 01:15:40*
+*Generated: 2025-08-15 05:47:35*
 *Analyzer Version: 2.0*
 
 ## 🔧 Function Documentation
@@ -28,7 +28,9 @@
 
 ### `read_tds_masters(file_path)`
 > Read the TDS Masters Excel file and return data from all sheets
-    FIXED: Uses openpyxl with data_only=True to read static values, avoiding type inference issues
+    FIXED:
+    1. Removed TDS RATES reading (not used in processing)
+    2. Smart row detection - stops at empty data rows (ignores formula-only rows)
 - **Category:** Excel file reading
 - **Cell:** 3
 - **Returns:** data from all sheets, {, None
