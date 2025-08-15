@@ -3,6 +3,7 @@
 
 import streamlit as st
 import os
+import zipfile
 import io
 import re
 import time
@@ -1715,39 +1716,23 @@ if go:
             updated_masters_path = file
             break
         
-        st.success('✅ Processing Complete! Download your files below:')
+        st.success('✅ Processing Complete!')
         
-        # Read both files into memory first
-        masters_data = None
-        output_data = None
+        # Create ZIP file with both outputs
+        zip_path = os.path.join(workdir, 'TDS_Output_Files.zip')
+        with zipfile.ZipFile(zip_path, 'w') as zipf:
+            if updated_masters_path and os.path.exists(updated_masters_path):
+                zipf.write(updated_masters_path, os.path.basename(updated_masters_path))
+            zipf.write(output_path, os.path.basename(output_path))
         
-        if updated_masters_path and os.path.exists(updated_masters_path):
-            with open(updated_masters_path, 'rb') as f:
-                masters_data = f.read()
-        
-        with open(output_path, 'rb') as f:
-            output_data = f.read()
-        
-        # Create two columns for download buttons
-        col1, col2 = st.columns(2)
-        
-        # Download button for Updated Masters
-        if masters_data:
-            with col1:
-                st.download_button(
-                    '📊 Download Updated Masters', 
-                    masters_data, 
-                    file_name=os.path.basename(updated_masters_path),
-                    key='masters_download'
-                )
-        
-        # Download button for Output file
-        with col2:
+        # Single download button for ZIP
+        with open(zip_path, 'rb') as f:
             st.download_button(
-                '📋 Download TDS Return File', 
-                output_data, 
-                file_name=os.path.basename(output_path),
-                key='output_download'
+                '📦 Download Both Files (ZIP)', 
+                f, 
+                file_name='TDS_Output_Files.zip',
+                type='primary',
+                use_container_width=True
             )
 
 st.caption('Tip: Keep file names and sheet names as in your existing workflow.')
