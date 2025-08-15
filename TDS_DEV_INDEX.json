@@ -3,10 +3,10 @@
     "analyzer_version": "2.0",
     "purpose": "AI coding assistance with implementation details",
     "notebook_path": "TDS_Automation_V2.ipynb",
-    "last_scan": "2025-08-15T07:28:08.595523",
-    "total_cells": 9,
-    "code_cells": 8,
-    "commit_hash": "e4ea7ac5"
+    "last_scan": "2025-08-15T09:09:52.497390",
+    "total_cells": 8,
+    "code_cells": 7,
+    "commit_hash": "4c0bf6ba"
   },
   "implementation_details": {
     "cell_1": {
@@ -106,17 +106,6 @@
         "gc",
         "google.colab",
         "pandas"
-      ]
-    },
-    "cell_8": {
-      "cell_index": 8,
-      "purpose": "Cell 8: Manual Cleanup - Run this AFTER downloads are complete",
-      "key_operations": [],
-      "data_flow": [],
-      "external_libs": [
-        "os",
-        "shutil",
-        "gc"
       ]
     }
   },
@@ -540,32 +529,6 @@
       "parameters": [],
       "docstring": "Start the interactive upload process",
       "returns": [],
-      "category": "utility",
-      "calls_functions": []
-    },
-    "cleanup_session": {
-      "cell": 8,
-      "parameters": [],
-      "docstring": "Complete cleanup of all TDS processing data",
-      "returns": [],
-      "category": "utility",
-      "calls_functions": []
-    },
-    "quick_cleanup": {
-      "cell": 8,
-      "parameters": [],
-      "docstring": "Quick cleanup without confirmation - use with caution!",
-      "returns": [],
-      "category": "utility",
-      "calls_functions": []
-    },
-    "check_session_status": {
-      "cell": 8,
-      "parameters": [],
-      "docstring": "Check what files are currently in the session",
-      "returns": [
-        "# Check PDFs"
-      ],
       "category": "utility",
       "calls_functions": []
     }
