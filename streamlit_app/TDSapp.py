@@ -1665,7 +1665,7 @@ with st.sidebar:
         """
     )
     
-    st.caption('If download button is missing, see the Debug box or check the Results folder.')
+    st.caption('Do not rename files, tabs, column headings or change formulas.')
 st.subheader('1) Upload files')
 pdf_files = st.file_uploader('PDF Challans (multiple allowed)', type=['pdf'], accept_multiple_files=True)
 masters_file = st.file_uploader('TDS Masters (Excel)', type=['xlsx', 'xls'])
