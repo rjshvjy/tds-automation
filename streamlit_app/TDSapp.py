@@ -1735,4 +1735,4 @@ if go:
                 use_container_width=True
             )
 
-st.caption('Note: Your data is not saved on any server.')
+st.caption('Note: Your data is not stored on any server.')
