@@ -1669,7 +1669,10 @@ with st.sidebar:
         """
     )
     
-    st.caption('If download button is missing, see the Debug box or check the Results folder.')
+    st.warning('⚠️ **Caution:** Do not rename files, tabs, column names or edit formulas in Template files')
+    
+    st.divider()
+    st.caption('💻 Developed by **Rajesh Vijay**')
 st.subheader('1) Upload files')
 pdf_files = st.file_uploader('PDF Challans (multiple allowed)', type=['pdf'], accept_multiple_files=True)
 masters_file = st.file_uploader('TDS Masters (Excel)', type=['xlsx', 'xls'])
@@ -1769,4 +1772,4 @@ if go:
                 use_container_width=True
             )
 
-st.caption('Tip: Keep file names and sheet names as in your existing workflow.')
+st.caption('🔒 Note: Your data is not stored on any servers')
