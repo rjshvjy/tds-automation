@@ -8,6 +8,7 @@ import io
 import re
 import time
 import glob
+import sys
 from datetime import datetime
 import pandas as pd
 import numpy as np
@@ -183,7 +184,7 @@ def extract_all_challans(pdf_folder_path):
         print(f"❌ No PDF files found in {pdf_folder_path}")
         return all_challan_data
 
-    print(f"\n📁 Found {len(pdf_files)} PDF files to process...")
+    print(f"\n🔍 Found {len(pdf_files)} PDF files to process...")
     print("-" * 50)
 
     # Process each PDF
@@ -390,6 +391,7 @@ def read_tds_masters(file_path):
         tds_parties = pd.DataFrame(data_rows, columns=headers)
 
         # Convert numeric columns with precise rounding - EXCLUDE (427) TO PRESERVE DECIMAL RATES
+        from decimal import Decimal, ROUND_HALF_UP
         numeric_codes = ['(419)', '(421)']  # Removed '(427)' to avoid quantizing rates to integers
         for code in numeric_codes:
             col_name = code_to_column_name.get(code)
@@ -468,6 +470,7 @@ def update_tds_masters_with_challans(tds_masters_data, challan_data_list):
     FIXED: Uses data_only=True to preserve static TDS values, writes BSR/challan as strings
     """
     try:
+        from decimal import Decimal, ROUND_HALF_UP
         # Load workbook with data_only=True to preserve static values
         wb = load_workbook(tds_masters_data['file_path'], data_only=True)
         ws_parties = wb['TDS PARTIES']
@@ -498,7 +501,7 @@ def update_tds_masters_with_challans(tds_masters_data, challan_data_list):
                 nop_clean = nop.replace(' ', '')
                 challan_map[nop_clean] = challan
 
-        print(f"\n📝 Updating TDS PARTIES sheet...")
+        print(f"\n🔍 Updating TDS PARTIES sheet...")
         print(f"   Challan Serial No (425E) → Column {col_425E}")
         print(f"   Date deposited (425F) → Column {col_425F}")
         updates_made = 0
@@ -527,7 +530,7 @@ def update_tds_masters_with_challans(tds_masters_data, challan_data_list):
         print(f"✅ Updated {updates_made} rows in TDS PARTIES")
 
         # Update Challan Details
-        print("\n📝 Updating Challan Details sheet...")
+        print("\n🔍 Updating Challan Details sheet...")
         for row in ws_challan.iter_rows(min_row=3, max_row=ws_challan.max_row):
             for cell in row:
                 cell.value = None
@@ -583,6 +586,7 @@ def validate_tds_totals(tds_masters_data, challan_data_list):
     print("\n🔍 Validating TDS totals...")
 
     try:
+        from decimal import Decimal, ROUND_HALF_UP
         tds_parties = tds_masters_data['tds_parties']
         code_to_column_name = tds_masters_data.get('code_to_column_name', {})
         payment_col = code_to_column_name.get('(415A)', None)
@@ -663,13 +667,13 @@ def validate_tds_totals(tds_masters_data, challan_data_list):
         return False
 
 print("✅ Excel handling functions loaded - COMPLETE FIX!")
-print("   ✓ REMOVED TDS RATES reading (not used in processing)")
-print("   ✓ Smart row detection - stops at empty data rows")
-print("   ✓ Ignores formula-only rows with 0 or empty values")
-print("   ✓ Uses Name (417) and PAN (416) to detect real data")
-print("   ✓ Stops after 5 consecutive empty rows")
-print("   ✓ Only validates PANs for rows with actual data")
-print("   ✓ All other functionality preserved")
+print("   ✔ REMOVED TDS RATES reading (not used in processing)")
+print("   ✔ Smart row detection - stops at empty data rows")
+print("   ✔ Ignores formula-only rows with 0 or empty values")
+print("   ✔ Uses Name (417) and PAN (416) to detect real data")
+print("   ✔ Stops after 5 consecutive empty rows")
+print("   ✔ Only validates PANs for rows with actual data")
+print("   ✔ All other functionality preserved")
 
 # Cell 4: Main processing function that coordinates all steps
 # This cell contains the main process_tds_returns function
@@ -702,7 +706,7 @@ def update_challan_details(ws, challan_data_list):
     """
     Helper function to update CHALLAN DETAILS sheet
     """
-    print("\n📝 Updating CHALLAN DETAILS...")
+    print("\n🔍 Updating CHALLAN DETAILS...")
     print(f"   Processing {len(challan_data_list)} unique challans...")
 
     # Find totals row
@@ -967,7 +971,7 @@ def update_deductee_breakup(ws, tds_masters_data, challan_data_list):
         elif '428' in cell_value:
             col_map['reason'] = col_idx
 
-    print("\n📝 Updating DEDUCTEE BREAK-UP...")
+    print("\n🔍 Updating DEDUCTEE BREAK-UP...")
     print("   Column Mappings Found:")
     for key, col in col_map.items():
         print(f"   - {key}: {ws.cell(row=1, column=col).value}")
@@ -1529,13 +1533,13 @@ def update_deductee_breakup_sheet_dynamic(ws, tds_masters_data, challan_data_lis
     print(f"   Totals row is at row {total_row}")
 
 print("✅ Output file generation functions loaded - COMPLETE FIX!")
-print("   ✓ TOTAL rows are preserved in both sheets")
-print("   ✓ All columns properly mapped from TDS Masters")
-print("   ✓ BSR Code, Challan No written as strings to preserve leading zeros")
-print("   ✓ Rate formatting fixed - decimals converted to percentages (0.1 → 10%)")
-print("   ✓ Dynamic row management preserves TOTAL formulas")
-print("   ✓ Column H (Paid by Book Entry) left blank as requested")
-print("   ✓ Proper date formatting and string conversion where appropriate")
+print("   ✔ TOTAL rows are preserved in both sheets")
+print("   ✔ All columns properly mapped from TDS Masters")
+print("   ✔ BSR Code, Challan No written as strings to preserve leading zeros")
+print("   ✔ Rate formatting fixed - decimals converted to percentages (0.1 → 10%)")
+print("   ✔ Dynamic row management preserves TOTAL formulas")
+print("   ✔ Column H (Paid by Book Entry) left blank as requested")
+print("   ✔ Proper date formatting and string conversion where appropriate")
 
 # Cell 6: Testing individual components and troubleshooting - FIXED VERSION
 # Use these functions to test each step separately if you encounter issues
@@ -1578,12 +1582,12 @@ def generate_output_file(tds_masters_data, challan_data_list, template_path, out
         print("✅ Loaded template")
 
         # Update CHALLAN DETAILS sheet with deduplicated challans
-        print("\n📝 Updating CHALLAN DETAILS...")
+        print("\n🔍 Updating CHALLAN DETAILS...")
         print(f"   Processing {len(challan_data_list)} unique challans...")
         update_challan_details_proper(ws_challan, challan_data_list)
 
         # Update DEDUCTEE BREAK-UP sheet
-        print("\n📝 Updating DEDUCTEE BREAK-UP...")
+        print("\n🔍 Updating DEDUCTEE BREAK-UP...")
         update_deductee_breakup_sheet_dynamic(ws_deductee, tds_masters_data, challan_data_list)
 
         # Save the file
@@ -1634,8 +1638,8 @@ def streamlit_process(pdf_paths, masters_path, template_path, outdir):
     return {'output_path': out_path}
 
 # ====== Streamlit UI ======
-st.set_page_config(page_title='TDS Automation', page_icon='🧾', layout='wide')
-st.title('🧾 TDS Automation — Streamlit App')
+st.set_page_config(page_title='TDS - PDF ITNS 281 to Spreadsheet', page_icon='🧾', layout='wide')
+st.title('🧾 TDS - PDF ITNS 281 to Spreadsheet')
 
 with st.sidebar:
     st.header('How it works')
@@ -1665,16 +1669,26 @@ with st.sidebar:
         """
     )
     
-    st.caption('Do not rename files, tabs, column headings or change formulas.')
+    st.caption('If download button is missing, see the Debug box or check the Results folder.')
 st.subheader('1) Upload files')
 pdf_files = st.file_uploader('PDF Challans (multiple allowed)', type=['pdf'], accept_multiple_files=True)
 masters_file = st.file_uploader('TDS Masters (Excel)', type=['xlsx', 'xls'])
 template_file = st.file_uploader('Template (Excel)', type=['xlsx', 'xls'])
 
-with st.expander('🔧 Debug (optional)'):
-    st.write('PDFs:', [f.name for f in (pdf_files or [])])
-    st.write('Masters:', getattr(masters_file, 'name', None))
-    st.write('Template:', getattr(template_file, 'name', None))
+# Initialize session state for debug output
+if 'debug_output' not in st.session_state:
+    st.session_state.debug_output = ""
+
+with st.expander('🔧 Debug (View Processing Details)'):
+    st.write('**Uploaded Files:**')
+    st.write('• PDFs:', [f.name for f in (pdf_files or [])])
+    st.write('• Masters:', getattr(masters_file, 'name', None))
+    st.write('• Template:', getattr(template_file, 'name', None))
+    
+    if st.session_state.debug_output:
+        st.divider()
+        st.write('**Processing Output:**')
+        st.code(st.session_state.debug_output, language='text')
 
 st.divider()
 st.subheader('2) Process')
@@ -1685,6 +1699,9 @@ if go:
         st.warning('Please upload PDFs, a Masters Excel, and a Template Excel.')
         st.stop()
 
+    # Create a StringIO object to capture print outputs
+    debug_buffer = io.StringIO()
+    
     with st.status('Processing…', expanded=True) as status:
         workdir = 'workdir'
         outdir = os.path.join(workdir, 'output')
@@ -1693,6 +1710,11 @@ if go:
         saved_pdfs, masters_path, template_path = save_uploaded_files(pdf_files, masters_file, template_file, workdir)
         status.update(label='Running pipeline…')
         output_path = None
+        
+        # Redirect print output to our buffer
+        old_stdout = sys.stdout
+        sys.stdout = debug_buffer
+        
         try:
             result = streamlit_process(saved_pdfs, masters_path, template_path, outdir)
             if isinstance(result, dict) and 'output_path' in result:
@@ -1703,9 +1725,18 @@ if go:
                     output_path = candidates[0]
             status.update(label='Done!', state='complete', expanded=False)
         except Exception as e:
+            # Restore stdout before handling error
+            sys.stdout = old_stdout
+            # Save debug output to session state
+            st.session_state.debug_output = debug_buffer.getvalue()
             status.update(label='Failed', state='error')
             st.exception(e)
             st.stop()
+        finally:
+            # Always restore stdout
+            sys.stdout = old_stdout
+            # Save debug output to session state
+            st.session_state.debug_output = debug_buffer.getvalue()
 
     if not output_path or not os.path.exists(output_path):
         st.error('Processing finished but no Excel file was found.')
@@ -1717,6 +1748,9 @@ if go:
             break
         
         st.success('✅ Processing Complete!')
+        
+        # Show a reminder to check debug output
+        st.info('💡 Check the **Debug** dropdown above to see detailed processing information.')
         
         # Create ZIP file with both outputs
         zip_path = os.path.join(workdir, 'TDS_Output_Files.zip')
@@ -1735,4 +1769,4 @@ if go:
                 use_container_width=True
             )
 
-st.caption('Note: Your data is not stored on any server.')
+st.caption('Tip: Keep file names and sheet names as in your existing workflow.')
