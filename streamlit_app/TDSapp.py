@@ -9,6 +9,7 @@ import re
 import time
 import glob
 import sys
+import shutil
 from datetime import datetime
 import pandas as pd
 import numpy as np
@@ -1604,9 +1605,22 @@ def generate_output_file(tds_masters_data, challan_data_list, template_path, out
         return None
 
 # ====== Helpers ======
+def cleanup_workdir(workdir):
+    """Clean up working directory to prevent data from previous runs"""
+    import shutil
+    if os.path.exists(workdir):
+        try:
+            shutil.rmtree(workdir)
+            print(f"Cleaned up previous working directory: {workdir}")
+        except Exception as e:
+            print(f"Warning: Could not fully clean working directory: {e}")
+    os.makedirs(workdir, exist_ok=True)
+    os.makedirs(os.path.join(workdir, 'pdfs'), exist_ok=True)
+    os.makedirs(os.path.join(workdir, 'output'), exist_ok=True)
+
 def save_uploaded_files(pdf_files, masters_file, template_file, workdir):
     pdf_dir = os.path.join(workdir, 'pdfs')
-    os.makedirs(pdf_dir, exist_ok=True)
+    # Directory already created by cleanup_workdir, no need to create again
     saved_pdfs = []
     for up in pdf_files or []:
         path = os.path.join(pdf_dir, up.name)
@@ -1708,7 +1722,10 @@ if go:
     with st.status('Processing…', expanded=True) as status:
         workdir = 'workdir'
         outdir = os.path.join(workdir, 'output')
-        os.makedirs(outdir, exist_ok=True)
+        
+        # Clean up any files from previous runs
+        cleanup_workdir(workdir)
+        
         st.write('Saving uploaded files…')
         saved_pdfs, masters_path, template_path = save_uploaded_files(pdf_files, masters_file, template_file, workdir)
         status.update(label='Running pipeline…')
