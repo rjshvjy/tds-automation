@@ -10,6 +10,7 @@ import time
 import glob
 import sys
 import shutil
+import uuid
 from datetime import datetime
 import pandas as pd
 import numpy as np
@@ -1605,6 +1606,21 @@ def generate_output_file(tds_masters_data, challan_data_list, template_path, out
         return None
 
 # ====== Helpers ======
+def cleanup_old_workdirs(max_age_minutes=60):
+    """Clean up old working directories older than max_age_minutes"""
+    current_time = time.time()
+    try:
+        for dirname in glob.glob('workdir_*'):
+            dir_age_minutes = (current_time - os.path.getctime(dirname)) / 60
+            if dir_age_minutes > max_age_minutes:
+                try:
+                    shutil.rmtree(dirname)
+                    print(f"Removed old directory: {dirname} (age: {dir_age_minutes:.1f} minutes)")
+                except Exception as e:
+                    print(f"Could not remove old directory {dirname}: {e}")
+    except Exception as e:
+        print(f"Cleanup check failed: {e}")
+
 def cleanup_workdir(workdir):
     """Clean up working directory to prevent data from previous runs"""
     import shutil
@@ -1719,17 +1735,28 @@ if go:
     # Create a StringIO object to capture print outputs
     debug_buffer = io.StringIO()
     
+    # Initialize variables for cleanup
+    workdir = None
+    output_path = None
+    
     with st.status('Processing…', expanded=True) as status:
-        workdir = 'workdir'
+        # Clean up old temporary directories (older than 1 hour)
+        cleanup_old_workdirs(max_age_minutes=60)
+        
+        # Create unique working directory for this session
+        session_id = str(uuid.uuid4())[:8]  # Use first 8 chars of UUID for readability
+        workdir = f'workdir_{session_id}'
         outdir = os.path.join(workdir, 'output')
         
-        # Clean up any files from previous runs
+        print(f"Session ID: {session_id}")
+        print(f"Working directory: {workdir}")
+        
+        # Clean up any files from previous runs (though directory should be unique)
         cleanup_workdir(workdir)
         
         st.write('Saving uploaded files…')
         saved_pdfs, masters_path, template_path = save_uploaded_files(pdf_files, masters_file, template_file, workdir)
         status.update(label='Running pipeline…')
-        output_path = None
         
         # Redirect print output to our buffer
         old_stdout = sys.stdout
@@ -1749,6 +1776,13 @@ if go:
             sys.stdout = old_stdout
             # Save debug output to session state
             st.session_state.debug_output = debug_buffer.getvalue()
+            # Try to clean up the temporary directory
+            if workdir and os.path.exists(workdir):
+                try:
+                    shutil.rmtree(workdir)
+                    print(f"Cleaned up temporary directory after error: {workdir}")
+                except:
+                    pass
             status.update(label='Failed', state='error')
             st.exception(e)
             st.stop()
@@ -1796,11 +1830,21 @@ if go:
         
         # Single download button for ZIP
         with open(zip_path, 'rb') as f:
-            st.download_button(
-                '📦 Download Both Files (ZIP)', 
-                f, 
-                file_name='TDS_Output_Files.zip',
-                use_container_width=True
-            )
+            zip_data = f.read()
+        
+        st.download_button(
+            '📦 Download Both Files (ZIP)', 
+            zip_data, 
+            file_name='TDS_Output_Files.zip',
+            use_container_width=True
+        )
+        
+        # Clean up the temporary working directory after creating download button
+        if workdir and os.path.exists(workdir):
+            try:
+                shutil.rmtree(workdir)
+                print(f"Cleaned up temporary directory: {workdir}")
+            except Exception as e:
+                print(f"Note: Could not remove temporary directory {workdir}: {e}")
 
 st.caption('🔒 Note: Your data is not stored on any servers')
