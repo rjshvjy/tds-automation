@@ -1779,13 +1779,27 @@ if go:
                 zipf.write(updated_masters_path, os.path.basename(updated_masters_path))
             zipf.write(output_path, os.path.basename(output_path))
         
+        # Add custom CSS to make download button green
+        st.markdown("""
+        <style>
+        .stDownloadButton > button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+        .stDownloadButton > button:hover {
+            background-color: #218838;
+            color: white;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
         # Single download button for ZIP
         with open(zip_path, 'rb') as f:
             st.download_button(
                 '📦 Download Both Files (ZIP)', 
                 f, 
                 file_name='TDS_Output_Files.zip',
-                type='primary',
                 use_container_width=True
             )
 
